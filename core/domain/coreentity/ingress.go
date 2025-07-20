@@ -1,0 +1,63 @@
+package coreentity
+
+import (
+	"errors"
+	"time"
+
+	"proletariat-budget-core/core/domain/misc"
+)
+
+type Ingress struct {
+	ID                      string       `json:"id"`
+	Category                *Category    `json:"category"`
+	Transaction             *Transaction `json:"transaction,omitempty"`
+	Tags                    *[]*Tag      `json:"tags,omitempty"`
+	Date                    *time.Time   `json:"date"`
+	FromRecurrencePatternID *string      `json:"from_recurrence_pattern,omitempty"`
+}
+
+type IngressList struct {
+	Ingresses []Ingress         `json:"ingresses"`
+	Metadata  misc.ListMetadata `json:"metadata"`
+}
+
+type IngressListParams struct {
+	CategoryID  *string    `form:"category,omitempty" json:"category,omitempty"`
+	Source      *string    `form:"source,omitempty" json:"source,omitempty"`
+	TagIDs      *[]string  `form:"tags,omitempty" json:"tags,omitempty"`
+	StartDate   *time.Time `form:"startDate,omitempty" json:"startDate,omitempty"`
+	EndDate     *time.Time `form:"endDate,omitempty" json:"endDate,omitempty"`
+	IsRecurring *bool      `form:"isRecurring,omitempty" json:"isRecurring,omitempty"`
+	Currency    *string    `form:"currency,omitempty" json:"currency,omitempty"`
+	misc.ListParams
+}
+
+// Ingress domain errors
+var (
+	ErrIngressNotFound             = errors.New("ingress not found")
+	ErrIngressAmountMustBePositive = errors.New("amount must be positive")
+	ErrIngressCategoryRequired     = errors.New("category is required")
+	ErrTransactionRequired         = errors.New("transaction is required")
+	ErrIngressDateRequired         = errors.New("date is required")
+	ErrIngressAccountRequired      = errors.New("account is required")
+)
+
+func (i *Ingress) Validate(isRollback bool) error {
+	if i.Transaction == nil {
+		return ErrTransactionRequired
+	}
+	if !isRollback && i.Transaction.Amount <= 0 {
+		return ErrIngressAmountMustBePositive
+	}
+	if i.Category == nil {
+		return ErrIngressCategoryRequired
+	}
+	if i.Date == nil {
+		return ErrIngressDateRequired
+	}
+	if i.Transaction.AccountID == "" {
+		return ErrIngressAccountRequired
+	}
+
+	return nil
+}
