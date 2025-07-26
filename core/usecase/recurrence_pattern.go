@@ -63,7 +63,6 @@ func (rp *RecurrencePattern) GetByID(
 
 func (rp *RecurrencePattern) Update(
 	ctx context.Context,
-	id string,
 	recurrencePattern coreentity.RecurrencePattern,
 ) (
 	*coreentity.RecurrencePattern,
@@ -76,7 +75,6 @@ func (rp *RecurrencePattern) Update(
 
 	err := rp.recurrencePatternRepo.Update(
 		ctx,
-		id,
 		recurrencePattern,
 	)
 	if err != nil {

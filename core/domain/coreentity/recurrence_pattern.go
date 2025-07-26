@@ -8,16 +8,16 @@ import (
 type RecurrencePattern struct {
 	ID            string     `json:"id"`
 	Frequency     Frequency  `json:"frequency"`
-	IntervalValue uint       `json:"interval"`
+	IntervalValue int        `json:"interval"`
 	Amount        float32    `json:"amount"`
 	AccountID     string     `json:"account_id"`
 	Account       *Account   `json:"account"`
 	Description   string     `json:"description"`
 	StartDate     *time.Time `json:"start_date"`
 	EndDate       *time.Time `json:"end_date"`
-	LastRunDate   *time.Time `json:"last_run_date"`
 	TaskType      TaskType   `json:"task_type"`
 	Active        bool       `json:"active"`
+	JobState      *JobState  `json:"job_state"`
 }
 
 type Frequency string
@@ -28,7 +28,6 @@ const (
 	Monthly          Frequency = "monthly"
 	Yearly           Frequency = "yearly"
 	NthDayOfTheMonth Frequency = "nth_day_of_the_month" // For these, interval will be the N value (e.g., 2nd day of the month)
-	NthDayOfTheWeek  Frequency = "nth_day_of_the_week"
 	NthDayOfTheYear  Frequency = "nth_day_of_the_year"
 )
 
@@ -79,14 +78,14 @@ func (r *RecurrencePattern) Validate() error {
 	if r.EndDate.Before(*r.StartDate) {
 		return ErrRecurrencyPatternEndBeforeStartDate
 	}
-	if r.IntervalValue == 0 {
+	if r.IntervalValue <= 0 {
 		return ErrRecurrencyPatternInvalidIntervalValue
 	}
 	if r.Frequency == NthDayOfTheMonth && r.IntervalValue > 31 {
 		// For months with less than 31 days, days between 29 & 31 will default to the last day of the month
 		return ErrRecurrencyPatternInvalidIntervalValue
 	}
-	if r.Frequency == NthDayOfTheWeek && r.IntervalValue > 7 {
+	if r.Frequency == Weekly && r.IntervalValue > 7 {
 		return ErrRecurrencyPatternInvalidIntervalValue
 	}
 	if r.Frequency == NthDayOfTheYear && r.IntervalValue > 365 {

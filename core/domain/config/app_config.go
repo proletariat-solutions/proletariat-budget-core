@@ -14,6 +14,7 @@ type DisplayConfig struct {
 	DateFormat        string `json:"date_format"`
 	TimeFormat        string `json:"time_format"`
 	ShowRelativeDates bool   `json:"show_relative_dates"`
+	TimeZone          string `json:"time_zone"`
 }
 
 /*

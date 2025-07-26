@@ -17,7 +17,6 @@ type RecurrencePattern interface {
 	)
 	Update(
 		ctx context.Context,
-		id string,
 		recurrencePattern coreentity.RecurrencePattern,
 	) error
 	Delete(
@@ -29,6 +28,18 @@ type RecurrencePattern interface {
 		id string,
 	) (
 		*coreentity.RecurrencePattern,
+		error,
+	)
+	GetFailedJobs(
+		ctx context.Context,
+	) (
+		[]coreentity.RecurrencePattern,
+		error,
+	)
+	GetTodayJobs(
+		ctx context.Context,
+	) (
+		[]coreentity.RecurrencePattern,
 		error,
 	)
 	List(
