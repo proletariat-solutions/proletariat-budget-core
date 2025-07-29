@@ -35,6 +35,13 @@ type SavingsGoal interface {
 		[]coreentity.SavingsGoal,
 		error,
 	)
+	IsActive(
+		ctx context.Context,
+		id string,
+	) (
+		bool,
+		error,
+	)
 	MarkAsCompleted(
 		ctx context.Context,
 		id string,
@@ -89,4 +96,12 @@ type SavingsGoal interface {
 		*coreentity.SavingsTransactionList,
 		error,
 	)
+	UpdateTemplate(
+		ctx context.Context,
+		template coreentity.SavingsContribution,
+	) error
+	DeleteTemplate(
+		ctx context.Context,
+		template coreentity.SavingsContribution,
+	) error
 }

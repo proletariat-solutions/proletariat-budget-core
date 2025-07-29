@@ -33,7 +33,7 @@ func (sc *ScheduleCalculator) CalculateNextExecution(
 	}
 
 	switch pattern.Frequency {
-	case coreentity.Daily:
+	case coreentity.NthDay:
 		return sc.calculateDailyNext(
 			lastExecution,
 			pattern.IntervalValue,
@@ -44,7 +44,7 @@ func (sc *ScheduleCalculator) CalculateNextExecution(
 			pattern.IntervalValue,
 		)
 	case coreentity.Monthly:
-		return sc.calculateWeeklyNext(
+		return sc.calculateMonthlyNext(
 			lastExecution,
 			pattern.IntervalValue,
 		)

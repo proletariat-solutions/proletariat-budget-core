@@ -11,7 +11,7 @@ package mocks
 
 import (
 	context "context"
-	domain "proletariat-budget-core/core/domain/auth"
+	auth "proletariat-budget-core/core/domain/auth"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
@@ -42,10 +42,10 @@ func (m *MockAuth) EXPECT() *MockAuthMockRecorder {
 }
 
 // CreateToken mocks base method.
-func (m *MockAuth) CreateToken(ctx context.Context, userID string) (*domain.AuthToken, error) {
+func (m *MockAuth) CreateToken(ctx context.Context, userID string) (*auth.AuthToken, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateToken", ctx, userID)
-	ret0, _ := ret[0].(*domain.AuthToken)
+	ret0, _ := ret[0].(*auth.AuthToken)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -57,7 +57,7 @@ func (mr *MockAuthMockRecorder) CreateToken(ctx, userID any) *gomock.Call {
 }
 
 // CreateUser mocks base method.
-func (m *MockAuth) CreateUser(ctx context.Context, user domain.User) (string, error) {
+func (m *MockAuth) CreateUser(ctx context.Context, user auth.User) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", ctx, user)
 	ret0, _ := ret[0].(string)
@@ -72,10 +72,10 @@ func (mr *MockAuthMockRecorder) CreateUser(ctx, user any) *gomock.Call {
 }
 
 // GetUserByEmail mocks base method.
-func (m *MockAuth) GetUserByEmail(ctx context.Context, email string) (*domain.User, error) {
+func (m *MockAuth) GetUserByEmail(ctx context.Context, email string) (*auth.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserByEmail", ctx, email)
-	ret0, _ := ret[0].(*domain.User)
+	ret0, _ := ret[0].(*auth.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -87,10 +87,10 @@ func (mr *MockAuthMockRecorder) GetUserByEmail(ctx, email any) *gomock.Call {
 }
 
 // GetUserByID mocks base method.
-func (m *MockAuth) GetUserByID(ctx context.Context, id string) (*domain.User, error) {
+func (m *MockAuth) GetUserByID(ctx context.Context, id string) (*auth.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserByID", ctx, id)
-	ret0, _ := ret[0].(*domain.User)
+	ret0, _ := ret[0].(*auth.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -116,7 +116,7 @@ func (mr *MockAuthMockRecorder) RevokeToken(ctx, token any) *gomock.Call {
 }
 
 // UpdateUser mocks base method.
-func (m *MockAuth) UpdateUser(ctx context.Context, id string, user domain.User) error {
+func (m *MockAuth) UpdateUser(ctx context.Context, id string, user auth.User) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateUser", ctx, id, user)
 	ret0, _ := ret[0].(error)
@@ -130,10 +130,10 @@ func (mr *MockAuthMockRecorder) UpdateUser(ctx, id, user any) *gomock.Call {
 }
 
 // ValidateToken mocks base method.
-func (m *MockAuth) ValidateToken(ctx context.Context, token string) (*domain.User, error) {
+func (m *MockAuth) ValidateToken(ctx context.Context, token string) (*auth.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ValidateToken", ctx, token)
-	ret0, _ := ret[0].(*domain.User)
+	ret0, _ := ret[0].(*auth.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

@@ -6,6 +6,7 @@ import (
 	domain "proletariat-budget-core/core/domain/coreentity"
 )
 
+//go:generate mockgen -source=notification.go -destination=../../test/mocks/mock_notification_repo.go -package mocks
 type Notification interface {
 	Create(
 		ctx context.Context,

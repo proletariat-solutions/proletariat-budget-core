@@ -30,4 +30,12 @@ type Expenditure interface {
 		*coreentity.ExpenditureList,
 		error,
 	)
+	UpdateTemplate(
+		ctx context.Context,
+		template coreentity.Expenditure,
+	) error
+	DeleteTemplate(
+		ctx context.Context,
+		template coreentity.Expenditure,
+	) error
 }

@@ -11,7 +11,7 @@ package mocks
 
 import (
 	context "context"
-	domain "proletariat-budget-core/core/domain/coreentity"
+	coreentity "proletariat-budget-core/core/domain/coreentity"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
@@ -42,7 +42,7 @@ func (m *MockTags) EXPECT() *MockTagsMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockTags) Create(ctx context.Context, tag domain.Tag) (string, error) {
+func (m *MockTags) Create(ctx context.Context, tag coreentity.Tag) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", ctx, tag)
 	ret0, _ := ret[0].(string)
@@ -71,10 +71,10 @@ func (mr *MockTagsMockRecorder) Delete(ctx, id any) *gomock.Call {
 }
 
 // GetByID mocks base method.
-func (m *MockTags) GetByID(ctx context.Context, id string) (*domain.Tag, error) {
+func (m *MockTags) GetByID(ctx context.Context, id string) (*coreentity.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", ctx, id)
-	ret0, _ := ret[0].(*domain.Tag)
+	ret0, _ := ret[0].(*coreentity.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -86,10 +86,10 @@ func (mr *MockTagsMockRecorder) GetByID(ctx, id any) *gomock.Call {
 }
 
 // GetByIDs mocks base method.
-func (m *MockTags) GetByIDs(ctx context.Context, ids []string) (*[]*domain.Tag, error) {
+func (m *MockTags) GetByIDs(ctx context.Context, ids []string) (*[]*coreentity.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByIDs", ctx, ids)
-	ret0, _ := ret[0].(*[]*domain.Tag)
+	ret0, _ := ret[0].(*[]*coreentity.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -101,10 +101,10 @@ func (mr *MockTagsMockRecorder) GetByIDs(ctx, ids any) *gomock.Call {
 }
 
 // GetByNameAndType mocks base method.
-func (m *MockTags) GetByNameAndType(ctx context.Context, name string, tagType domain.TagType) (*domain.Tag, error) {
+func (m *MockTags) GetByNameAndType(ctx context.Context, name string, tagType coreentity.TagType) (*coreentity.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByNameAndType", ctx, name, tagType)
-	ret0, _ := ret[0].(*domain.Tag)
+	ret0, _ := ret[0].(*coreentity.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -116,7 +116,7 @@ func (mr *MockTagsMockRecorder) GetByNameAndType(ctx, name, tagType any) *gomock
 }
 
 // LinkTagsToType mocks base method.
-func (m *MockTags) LinkTagsToType(ctx context.Context, foreignID string, tags *[]*domain.Tag) error {
+func (m *MockTags) LinkTagsToType(ctx context.Context, foreignID string, tags *[]*coreentity.Tag) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "LinkTagsToType", ctx, foreignID, tags)
 	ret0, _ := ret[0].(error)
@@ -130,10 +130,10 @@ func (mr *MockTagsMockRecorder) LinkTagsToType(ctx, foreignID, tags any) *gomock
 }
 
 // List mocks base method.
-func (m *MockTags) List(ctx context.Context) (*[]*domain.Tag, error) {
+func (m *MockTags) List(ctx context.Context) (*[]*coreentity.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", ctx)
-	ret0, _ := ret[0].(*[]*domain.Tag)
+	ret0, _ := ret[0].(*[]*coreentity.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -145,10 +145,10 @@ func (mr *MockTagsMockRecorder) List(ctx any) *gomock.Call {
 }
 
 // ListByType mocks base method.
-func (m *MockTags) ListByType(ctx context.Context, tagType domain.TagType, ids *[]string) (*[]*domain.Tag, error) {
+func (m *MockTags) ListByType(ctx context.Context, tagType coreentity.TagType, ids *[]string) (*[]*coreentity.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListByType", ctx, tagType, ids)
-	ret0, _ := ret[0].(*[]*domain.Tag)
+	ret0, _ := ret[0].(*[]*coreentity.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -160,7 +160,7 @@ func (mr *MockTagsMockRecorder) ListByType(ctx, tagType, ids any) *gomock.Call {
 }
 
 // Update mocks base method.
-func (m *MockTags) Update(ctx context.Context, id string, tag domain.Tag) error {
+func (m *MockTags) Update(ctx context.Context, id string, tag coreentity.Tag) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", ctx, id, tag)
 	ret0, _ := ret[0].(error)

@@ -11,7 +11,7 @@ package mocks
 
 import (
 	context "context"
-	domain "proletariat-budget-core/core/domain/coreentity"
+	coreentity "proletariat-budget-core/core/domain/coreentity"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
@@ -71,7 +71,7 @@ func (mr *MockHouseholdMemberMockRecorder) CanDelete(ctx, id any) *gomock.Call {
 }
 
 // Create mocks base method.
-func (m *MockHouseholdMember) Create(ctx context.Context, householdMember domain.HouseholdMember) (string, error) {
+func (m *MockHouseholdMember) Create(ctx context.Context, householdMember coreentity.HouseholdMember) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", ctx, householdMember)
 	ret0, _ := ret[0].(string)
@@ -114,10 +114,10 @@ func (mr *MockHouseholdMemberMockRecorder) Delete(ctx, id any) *gomock.Call {
 }
 
 // GetByID mocks base method.
-func (m *MockHouseholdMember) GetByID(ctx context.Context, id string) (*domain.HouseholdMember, error) {
+func (m *MockHouseholdMember) GetByID(ctx context.Context, id string) (*coreentity.HouseholdMember, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", ctx, id)
-	ret0, _ := ret[0].(*domain.HouseholdMember)
+	ret0, _ := ret[0].(*coreentity.HouseholdMember)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -129,10 +129,10 @@ func (mr *MockHouseholdMemberMockRecorder) GetByID(ctx, id any) *gomock.Call {
 }
 
 // List mocks base method.
-func (m *MockHouseholdMember) List(ctx context.Context, params *domain.HouseholdMemberListParams) (*domain.HouseholdMemberList, error) {
+func (m *MockHouseholdMember) List(ctx context.Context, params *coreentity.HouseholdMemberListParams) (*coreentity.HouseholdMemberList, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", ctx, params)
-	ret0, _ := ret[0].(*domain.HouseholdMemberList)
+	ret0, _ := ret[0].(*coreentity.HouseholdMemberList)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -144,7 +144,7 @@ func (mr *MockHouseholdMemberMockRecorder) List(ctx, params any) *gomock.Call {
 }
 
 // Update mocks base method.
-func (m *MockHouseholdMember) Update(ctx context.Context, id string, householdMember domain.HouseholdMember) error {
+func (m *MockHouseholdMember) Update(ctx context.Context, id string, householdMember coreentity.HouseholdMember) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", ctx, id, householdMember)
 	ret0, _ := ret[0].(error)

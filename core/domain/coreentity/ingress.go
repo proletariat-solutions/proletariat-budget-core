@@ -8,12 +8,12 @@ import (
 )
 
 type Ingress struct {
-	ID                      string       `json:"id"`
-	Category                *Category    `json:"category"`
-	Transaction             *Transaction `json:"transaction,omitempty"`
-	Tags                    *[]*Tag      `json:"tags,omitempty"`
-	Date                    *time.Time   `json:"date"`
-	FromRecurrencePatternID *string      `json:"from_recurrence_pattern,omitempty"`
+	ID                        string                    `json:"id"`
+	Category                  *Category                 `json:"category"`
+	Transaction               *Transaction              `json:"transaction,omitempty"`
+	Tags                      *[]*Tag                   `json:"tags,omitempty"`
+	RecurrenceTransactionInfo *RecurrentTransactionInfo `json:"recurrence_transaction_info,omitempty"`
+	AuditData
 }
 
 type IngressList struct {
@@ -42,12 +42,9 @@ var (
 	ErrIngressAccountRequired      = errors.New("account is required")
 )
 
-func (i *Ingress) Validate(isRollback bool) error {
+func (i *Ingress) Validate() error {
 	if i.Transaction == nil {
 		return ErrTransactionRequired
-	}
-	if !isRollback && i.Transaction.Amount <= 0 {
-		return ErrIngressAmountMustBePositive
 	}
 	if i.Category == nil {
 		return ErrIngressCategoryRequired
@@ -55,9 +52,6 @@ func (i *Ingress) Validate(isRollback bool) error {
 	if i.Date == nil {
 		return ErrIngressDateRequired
 	}
-	if i.Transaction.AccountID == "" {
-		return ErrIngressAccountRequired
-	}
 
-	return nil
+	return i.Transaction.Validate()
 }

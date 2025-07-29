@@ -11,7 +11,7 @@ package mocks
 
 import (
 	context "context"
-	"proletariat-budget-core/core/domain/coreentity"
+	coreentity "proletariat-budget-core/core/domain/coreentity"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"

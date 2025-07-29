@@ -7,9 +7,9 @@ import (
 	"proletariat-budget-core/core/port"
 )
 
-// SchedulerService is the application service that orchestrates the scheduler
+// SchedulerService is the application service that manages the orchestrator
 type SchedulerService struct {
-	scheduler *JobScheduler
+	orchestrator *Orchestrator
 }
 
 func NewSchedulerService(
@@ -17,26 +17,26 @@ func NewSchedulerService(
 	processor port.TaskProcessor,
 	timeProvider port.TimeProvider,
 ) *SchedulerService {
-	scheduler := NewJobScheduler(
+	orchestrator := NewOrchestrator(
 		repository,
 		processor,
 		timeProvider,
 	)
 
 	return &SchedulerService{
-		scheduler: scheduler,
+		orchestrator: orchestrator,
 	}
 }
 
-// Start starts the scheduler service
+// Start starts the orchestrator service
 func (s *SchedulerService) Start(ctx context.Context) error {
-	log.Println("Starting scheduler service...")
+	log.Println("Starting orchestrator service...")
 
-	return s.scheduler.Start(ctx)
+	return s.orchestrator.Start(ctx)
 }
 
-// Stop stops the scheduler service
+// Stop stops the orchestrator service
 func (s *SchedulerService) Stop() {
-	log.Println("Stopping scheduler service...")
-	s.scheduler.Stop()
+	log.Println("Stopping orchestrator service...")
+	s.orchestrator.Stop()
 }

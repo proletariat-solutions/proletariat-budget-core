@@ -48,4 +48,11 @@ type RecurrencePattern interface {
 		[]coreentity.RecurrencePattern,
 		error,
 	)
+	IsActive(
+		ctx context.Context,
+		id string,
+	) (
+		bool,
+		error,
+	)
 }

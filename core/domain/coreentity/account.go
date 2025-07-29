@@ -88,5 +88,5 @@ func (a *Account) SetInactive() error {
 
 // HasSufficientBalance checks if the account has sufficient balance for a transaction
 func (a *Account) HasSufficientBalance(amount float32) bool {
-	return a.CurrentBalance+a.OverdraftLimit < amount
+	return a.CurrentBalance+a.OverdraftLimit > amount
 }

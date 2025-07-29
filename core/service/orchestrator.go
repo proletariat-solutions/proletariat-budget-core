@@ -16,8 +16,8 @@ const (
 	CheckInterval       = 24 * time.Hour
 )
 
-// JobScheduler manages job scheduling and execution
-type JobScheduler struct {
+// Orchestrator manages job scheduling and execution
+type Orchestrator struct {
 	recurrencePatternRepo port.RecurrencePattern
 	processor             port.TaskProcessor
 	calculator            *ScheduleCalculator
@@ -27,12 +27,12 @@ type JobScheduler struct {
 	doneChan              chan struct{}
 }
 
-func NewJobScheduler(
+func NewOrchestrator(
 	repository port.RecurrencePattern,
 	processor port.TaskProcessor,
 	timeProvider port.TimeProvider,
-) *JobScheduler {
-	return &JobScheduler{
+) *Orchestrator {
+	return &Orchestrator{
 		recurrencePatternRepo: repository,
 		processor:             processor,
 		calculator:            NewScheduleCalculator(timeProvider),
@@ -43,8 +43,8 @@ func NewJobScheduler(
 }
 
 // Start begins the job scheduling loop
-func (js *JobScheduler) Start(ctx context.Context) error {
-	log.Info().Msg("Starting job scheduler...")
+func (js *Orchestrator) Start(ctx context.Context) error {
+	log.Info().Msg("Starting job orchestrator...")
 
 	// Attempt recovery on startup
 	js.recoverFromFailure(ctx)
@@ -54,15 +54,15 @@ func (js *JobScheduler) Start(ctx context.Context) error {
 	return nil
 }
 
-// Stop gracefully stops the scheduler
-func (js *JobScheduler) Stop() {
-	log.Info().Msg("Stopping job scheduler...")
+// Stop gracefully stops the orchestrator
+func (js *Orchestrator) Stop() {
+	log.Info().Msg("Stopping job orchestrator...")
 	close(js.stopChan)
 	<-js.doneChan
-	log.Info().Msg("Job scheduler stopped")
+	log.Info().Msg("Job orchestrator stopped")
 }
 
-func (js *JobScheduler) schedulingLoop(ctx context.Context) {
+func (js *Orchestrator) schedulingLoop(ctx context.Context) {
 	defer close(js.doneChan)
 
 	ticker := js.tickerProvider.NewTicker(CheckInterval)
@@ -75,12 +75,12 @@ func (js *JobScheduler) schedulingLoop(ctx context.Context) {
 		case <-js.stopChan:
 			return
 		case <-ticker.C:
-			go js.checkAndExecuteJob(ctx)
+			go js.checkAndExecuteJobs(ctx)
 		}
 	}
 }
 
-func (js *JobScheduler) checkAndExecuteJob(ctx context.Context) {
+func (js *Orchestrator) checkAndExecuteJobs(ctx context.Context) {
 	// Get job configuration
 	patterns, err := js.recurrencePatternRepo.GetTodayJobs(ctx)
 	if err != nil {
@@ -116,7 +116,7 @@ func (js *JobScheduler) checkAndExecuteJob(ctx context.Context) {
 	}
 }
 
-func (js *JobScheduler) executeJob(
+func (js *Orchestrator) executeJob(
 	ctx context.Context,
 	pattern *coreentity.RecurrencePattern,
 ) error {
@@ -134,7 +134,10 @@ func (js *JobScheduler) executeJob(
 	}
 
 	// Execute the job
-	err := js.runJob(ctx)
+	err := js.processor.ProcessTask(
+		ctx,
+		*pattern,
+	)
 
 	// Update state based on result
 	now := js.timeProvider.Now()
@@ -175,44 +178,7 @@ func (js *JobScheduler) executeJob(
 	return err
 }
 
-func (js *JobScheduler) runJob(ctx context.Context) error {
-	// Get tasks for today
-	tasksForToday, errGetTasks := js.recurrencePatternRepo.GetTodayJobs(
-		ctx,
-	)
-	if errGetTasks != nil {
-		return fmt.Errorf(
-			"failed to get tasks: %w",
-			errGetTasks,
-		)
-	}
-
-	if len(tasksForToday) == 0 {
-		log.Info().Msg("No tasks found for today")
-
-		return nil
-	}
-
-	log.Printf(
-		"Processing %d tasks",
-		len(tasksForToday),
-	)
-
-	// Process tasks
-	if err := js.processor.ProcessTasks(
-		ctx,
-		tasksForToday,
-	); err != nil {
-		return fmt.Errorf(
-			"failed to process tasks: %w",
-			err,
-		)
-	}
-
-	return nil
-}
-
-func (js *JobScheduler) recoverFromFailure(ctx context.Context) {
+func (js *Orchestrator) recoverFromFailure(ctx context.Context) {
 	failedJobs, errGetJobState := js.recurrencePatternRepo.GetFailedJobs(ctx)
 	if errGetJobState != nil || len(failedJobs) == 0 {
 		return // No failedJobs to recover from
@@ -221,7 +187,7 @@ func (js *JobScheduler) recoverFromFailure(ctx context.Context) {
 	for _, failedJob := range failedJobs {
 		go func() {
 			// Check if we need recovery
-			if failedJob.JobState.Status != coreentity.StatusError && failedJob.JobState.Status != coreentity.StatusRunning {
+			if failedJob.JobState.Status != coreentity.StatusError {
 				return
 			}
 
@@ -250,7 +216,10 @@ func (js *JobScheduler) recoverFromFailure(ctx context.Context) {
 				ctx,
 				failedJob,
 			); err != nil {
-				log.Err(err).Msgf("Failed to mark job ID %s as recovering", failedJob.ID)
+				log.Err(err).Msgf(
+					"Failed to mark job ID %s as recovering",
+					failedJob.ID,
+				)
 			}
 
 			// Attempt to execute
@@ -259,7 +228,10 @@ func (js *JobScheduler) recoverFromFailure(ctx context.Context) {
 				&failedJob,
 			)
 			if err != nil {
-				log.Err(err).Msgf("Failed to recover job ID %s", failedJob.ID)
+				log.Err(err).Msgf(
+					"Failed to recover job ID %s",
+					failedJob.ID,
+				)
 			}
 		}()
 	}

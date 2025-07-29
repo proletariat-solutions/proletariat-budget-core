@@ -3,25 +3,34 @@ package usecase
 import (
 	"context"
 	"errors"
+	"github.com/rs/zerolog/log"
 
 	"proletariat-budget-core/core/domain/coreentity"
 	"proletariat-budget-core/core/port"
 )
 
 type Ingress struct {
-	accountRepo port.Account
-	ingressRepo port.Ingress
-	txManager   port.TransactionManager
+	accountRepo  port.Account
+	categoryRepo port.Category
+	ingressRepo  port.Ingress
+	txManager    port.TransactionManager
 }
 
 func NewIngressUseCase(
 	accountRepo port.Account,
+	categoryRepo port.Category,
+	ingressRepo port.Ingress,
 	txManager port.TransactionManager,
 ) *Ingress {
-	return &Ingress{accountRepo: accountRepo, txManager: txManager}
+	return &Ingress{
+		accountRepo:  accountRepo,
+		categoryRepo: categoryRepo,
+		ingressRepo:  ingressRepo,
+		txManager:    txManager,
+	}
 }
 
-func (u *Ingress) Create(
+func (i *Ingress) Create(
 	ctx context.Context,
 	ingress coreentity.Ingress,
 	recurrencePattern *coreentity.RecurrencePattern, // Optional, used only if ingress is result of a recurring transaction
@@ -29,37 +38,47 @@ func (u *Ingress) Create(
 	*coreentity.Ingress,
 	error,
 ) {
-	errIngressValidation := ingress.Validate(false)
+	errIngressValidation := ingress.Validate()
+
 	if errIngressValidation != nil {
 		return nil, errIngressValidation
 	}
-	// Validate account
-	account, err := u.accountRepo.GetByID(
+
+	account, errValidateAccount := i.validateAccount(
 		ctx,
 		ingress.Transaction.AccountID,
 	)
-	if err != nil {
-		if errors.Is(
-			err,
-			port.ErrRecordNotFound,
-		) {
-			return nil, coreentity.ErrAccountNotFound
-		}
 
-		return nil, err
+	if errValidateAccount != nil {
+		return nil, errValidateAccount
 	}
-	if !account.Active {
-		return nil, coreentity.ErrAccountInactive
+
+	category, errValidateCategory := i.validateCategory(
+		ctx,
+		ingress.Category.ID,
+	)
+	if errValidateCategory != nil {
+		return nil, errValidateCategory
 	}
+
+	ingress.Category = category
+
 	// Create transaction
-	errTx := u.txManager.WithDatabaseTransaction(
+	errTx := i.txManager.WithDatabaseTransaction(
 		ctx,
 		func(
 			ctx context.Context,
 			tx port.TransactionContext,
 		) error {
-			// Set recurrence pattern id if provided
-			ingress.FromRecurrencePatternID = &recurrencePattern.ID
+			if recurrencePattern != nil {
+				// Set recurrence pattern id if provided
+				recurrence := coreentity.RecurrentTransactionInfo{
+					FromRecurrencePatternID: &recurrencePattern.ID,
+					IsTemplate:              false,
+				}
+
+				ingress.RecurrenceTransactionInfo = &recurrence
+			}
 
 			// Update account balance
 			account.CreditBalance(ingress.Transaction.Amount)
@@ -98,7 +117,25 @@ func (u *Ingress) Create(
 			}
 
 			ingress.ID = ingressID
-
+			// Link tags if present
+			errLink := i.linkTags(
+				ctx,
+				ingressID,
+				ingress.Tags,
+				tx.GetTagsRepo(),
+			)
+			if errLink != nil {
+				if recurrencePattern != nil {
+					// Logging and notifying error to the user, since this is a recoverable error
+					// TODO: notify user
+					log.Err(errLink).Msgf(
+						"Failed to link tags to ingress %s",
+						ingressID,
+					)
+				} else {
+					return errLink
+				}
+			}
 			return nil
 		},
 	)
@@ -110,14 +147,14 @@ func (u *Ingress) Create(
 	return &ingress, nil
 }
 
-func (u *Ingress) GetByID(
+func (i *Ingress) GetByID(
 	ctx context.Context,
 	id string,
 ) (
 	*coreentity.Ingress,
 	error,
 ) {
-	ingress, err := u.ingressRepo.GetByID(
+	ingress, err := i.ingressRepo.GetByID(
 		ctx,
 		id,
 	)
@@ -135,14 +172,14 @@ func (u *Ingress) GetByID(
 	return &ingress, nil
 }
 
-func (u *Ingress) List(
+func (i *Ingress) List(
 	ctx context.Context,
 	params coreentity.IngressListParams,
 ) (
 	*coreentity.IngressList,
 	error,
 ) {
-	ingresses, err := u.ingressRepo.List(
+	ingresses, err := i.ingressRepo.List(
 		ctx,
 		params,
 	)
@@ -151,4 +188,79 @@ func (u *Ingress) List(
 	}
 
 	return &ingresses, nil
+}
+
+func (i *Ingress) validateAccount(
+	ctx context.Context,
+	accountID string,
+) (
+	*coreentity.Account,
+	error,
+) {
+	// Validate account
+	account, err := i.accountRepo.GetByID(
+		ctx,
+		accountID,
+	)
+	if err != nil {
+		if errors.Is(
+			err,
+			port.ErrRecordNotFound,
+		) {
+			return nil, coreentity.ErrAccountNotFound
+		}
+
+		return nil, err
+	}
+	if !account.Active {
+		return nil, coreentity.ErrAccountInactive
+	}
+
+	return account, nil
+}
+
+func (i *Ingress) validateCategory(
+	ctx context.Context,
+	categoryID string,
+) (
+	*coreentity.Category,
+	error,
+) {
+	category, err := i.categoryRepo.GetByID(
+		ctx,
+		categoryID,
+	)
+	if err != nil {
+		if errors.Is(
+			err,
+			port.ErrRecordNotFound,
+		) {
+			return nil, coreentity.ErrCategoryNotFound
+		}
+
+		return nil, err
+	}
+	if !category.Active {
+		return nil, coreentity.ErrCategoryInactive
+	}
+
+	return category, nil
+}
+
+func (i *Ingress) linkTags(
+	ctx context.Context,
+	expID string,
+	tags *[]*coreentity.Tag,
+	repo port.Tags,
+) error {
+	if tags == nil || len(*tags) == 0 {
+		return nil
+	}
+
+	err := repo.LinkTagsToType(
+		ctx,
+		expID,
+		tags,
+	)
+	return err
 }

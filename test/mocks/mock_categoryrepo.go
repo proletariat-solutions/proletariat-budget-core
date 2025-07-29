@@ -11,7 +11,7 @@ package mocks
 
 import (
 	context "context"
-	domain "proletariat-budget-core/core/domain/coreentity"
+	coreentity "proletariat-budget-core/core/domain/coreentity"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
@@ -42,7 +42,7 @@ func (m *MockCategory) EXPECT() *MockCategoryMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockCategory) Create(ctx context.Context, category domain.Category) (string, error) {
+func (m *MockCategory) Create(ctx context.Context, category coreentity.Category) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", ctx, category)
 	ret0, _ := ret[0].(string)
@@ -71,10 +71,10 @@ func (mr *MockCategoryMockRecorder) Delete(ctx, id any) *gomock.Call {
 }
 
 // FindByIDs mocks base method.
-func (m *MockCategory) FindByIDs(ctx context.Context, ids []string) ([]domain.Category, error) {
+func (m *MockCategory) FindByIDs(ctx context.Context, ids []string) ([]coreentity.Category, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindByIDs", ctx, ids)
-	ret0, _ := ret[0].([]domain.Category)
+	ret0, _ := ret[0].([]coreentity.Category)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -86,10 +86,10 @@ func (mr *MockCategoryMockRecorder) FindByIDs(ctx, ids any) *gomock.Call {
 }
 
 // FindByType mocks base method.
-func (m *MockCategory) FindByType(ctx context.Context, categoryType domain.CategoryType) ([]domain.Category, error) {
+func (m *MockCategory) FindByType(ctx context.Context, categoryType coreentity.CategoryType) ([]coreentity.Category, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindByType", ctx, categoryType)
-	ret0, _ := ret[0].([]domain.Category)
+	ret0, _ := ret[0].([]coreentity.Category)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -101,10 +101,10 @@ func (mr *MockCategoryMockRecorder) FindByType(ctx, categoryType any) *gomock.Ca
 }
 
 // GetByID mocks base method.
-func (m *MockCategory) GetByID(ctx context.Context, id string) (*domain.Category, error) {
+func (m *MockCategory) GetByID(ctx context.Context, id string) (*coreentity.Category, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", ctx, id)
-	ret0, _ := ret[0].(*domain.Category)
+	ret0, _ := ret[0].(*coreentity.Category)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -116,10 +116,10 @@ func (mr *MockCategoryMockRecorder) GetByID(ctx, id any) *gomock.Call {
 }
 
 // List mocks base method.
-func (m *MockCategory) List(ctx context.Context) ([]domain.Category, error) {
+func (m *MockCategory) List(ctx context.Context) ([]coreentity.Category, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", ctx)
-	ret0, _ := ret[0].([]domain.Category)
+	ret0, _ := ret[0].([]coreentity.Category)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -131,7 +131,7 @@ func (mr *MockCategoryMockRecorder) List(ctx any) *gomock.Call {
 }
 
 // Update mocks base method.
-func (m *MockCategory) Update(ctx context.Context, category domain.Category) error {
+func (m *MockCategory) Update(ctx context.Context, category coreentity.Category) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", ctx, category)
 	ret0, _ := ret[0].(error)

@@ -6,7 +6,11 @@ import (
 )
 
 var (
-	ErrTransactionNotFound = errors.New("transaction not found")
+	ErrTransactionNotFound                     = errors.New("transaction not found")
+	ErrTransactionAmountMustBePositive         = errors.New("transaction amount must be positive")
+	ErrTransactionRollbackAmountMustBeNegative = errors.New("rollback amount must be negative")
+	ErrTransactionDescriptionEmpty             = errors.New("description cannot be empty")
+	ErrTransactionCurrencyEmpty                = errors.New("currency cannot be empty")
 )
 
 type Transaction struct {
@@ -20,7 +24,27 @@ type Transaction struct {
 	BalanceAfter    *float32           `json:"balance_after"`
 	Status          *TransactionStatus `json:"status"`
 	CreatedAt       time.Time          `json:"created_at"`
-	UpdatedAt       time.Time          `json:"updated_at"`
+	IsTemplate      bool               `json:"is_template"`
+}
+
+func (t *Transaction) Validate() error {
+	if t.Amount <= 0 && t.TransactionType != TransactionTypeRollback {
+		return ErrTransactionAmountMustBePositive
+	}
+
+	if t.TransactionType == TransactionTypeRollback && t.Amount >= 0 {
+		return ErrTransactionRollbackAmountMustBeNegative
+	}
+
+	if t.Description == "" {
+		return ErrTransactionDescriptionEmpty
+	}
+
+	if t.Currency == "" {
+		return ErrTransactionCurrencyEmpty
+	}
+
+	return nil
 }
 
 type ListTransactionsParams struct{}
@@ -51,6 +75,7 @@ const (
 	TransactionStatusFailed    TransactionStatus = "failed"
 	TransactionStatusCancelled TransactionStatus = "canceled"
 	TransactionStatusReversed  TransactionStatus = "reversed"
+	TransactionStatusIgnored   TransactionStatus = "ignored"
 )
 
 // String returns the string representation of the transaction status
@@ -76,6 +101,5 @@ func RollbackTransaction(
 		BalanceAfter:    &balanceAfter,
 		Status:          &statusCompleted,
 		CreatedAt:       time.Now(),
-		UpdatedAt:       time.Now(),
 	}
 }

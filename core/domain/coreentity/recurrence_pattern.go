@@ -6,24 +6,37 @@ import (
 )
 
 type RecurrencePattern struct {
-	ID            string     `json:"id"`
-	Frequency     Frequency  `json:"frequency"`
-	IntervalValue int        `json:"interval"`
-	Amount        float32    `json:"amount"`
-	AccountID     string     `json:"account_id"`
-	Account       *Account   `json:"account"`
-	Description   string     `json:"description"`
-	StartDate     *time.Time `json:"start_date"`
-	EndDate       *time.Time `json:"end_date"`
-	TaskType      TaskType   `json:"task_type"`
-	Active        bool       `json:"active"`
-	JobState      *JobState  `json:"job_state"`
+	ID            string                       `json:"id"`
+	Frequency     Frequency                    `json:"frequency"`
+	IntervalValue int                          `json:"interval"`
+	Amount        float32                      `json:"amount"`
+	AccountID     string                       `json:"account_id"`
+	Account       *Account                     `json:"account"`
+	Description   string                       `json:"description"`
+	StartDate     *time.Time                   `json:"start_date"`
+	EndDate       *time.Time                   `json:"end_date"`
+	TaskType      TaskType                     `json:"task_type"`
+	Active        bool                         `json:"active"`
+	JobState      *JobState                    `json:"job_state"`
+	Template      RecurrentTransactionTemplate `json:"template,omitempty"`
+}
+
+type RecurrentTransactionInfo struct {
+	FromRecurrencePatternID *string `json:"from_recurrence_pattern,omitempty"`
+	IsTemplate              bool    `json:"is_template"`
+}
+
+type RecurrentTransactionTemplate struct {
+	Expenditure         *Expenditure
+	SavingsContribution *SavingsContribution
+	Ingress             *Ingress
+	Transfer            *Transfer
 }
 
 type Frequency string
 
 const (
-	Daily            Frequency = "daily"
+	NthDay           Frequency = "nth_day" // For these, interval will be the N value (every Nth days). Daily is 1.
 	Weekly           Frequency = "weekly"
 	Monthly          Frequency = "monthly"
 	Yearly           Frequency = "yearly"
@@ -51,6 +64,7 @@ var (
 	ErrRecurrencyPatternEndEmpty             = errors.New("end date cannot be empty")
 	ErrRecurrencyPatternEndBeforeStartDate   = errors.New("end date cannot be before start date")
 	ErrRecurrencyPatternInvalidIntervalValue = errors.New("invalid interval value")
+	ErrRecurrencyPatternUnsupportedTaskType  = errors.New("unsupported task type")
 )
 
 func (r *RecurrencePattern) Validate() error {

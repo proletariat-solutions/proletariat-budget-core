@@ -37,7 +37,7 @@ func DefaultAppConfig() AppConfig {
 			ShowRelativeDates: true,
 		},
 		WorkersConfig: WorkersConfig{ // Running every day, midnight
-			WorkerFrequency:      coreentity.Daily,
+			WorkerFrequency:      coreentity.NthDay,
 			WorkerInterval:       1,
 			WorkerTimeOfDayStart: "00:00:00",
 		},

@@ -7,10 +7,13 @@ type Ports struct {
 	Expenditure        *Expenditure
 	HouseholdMembers   *HouseholdMember
 	Ingress            *Ingress
+	Notification       *Notification
+	RecurrencePattern  *RecurrencePattern
 	SavingGoal         *SavingsGoal
 	Tags               *Tags
+	TimeProvider       *TimeProvider
+	TickerProvider     *TickerProvider
 	Transaction        *Transaction
 	TransactionManager *TransactionManager
 	Transfer           *Transfer
-	RecurrencePattern  *RecurrencePattern
 }

@@ -8,14 +8,15 @@ import (
 )
 
 var (
-	ErrTransferNotFound              = errors.New("transfer not found")
-	ErrSourceAccountNotEnoughBalance = errors.New("source account does not have enough balance")
-	ErrRateMultiplierMustBePositive  = errors.New("exchange rate multiplier must be positive")
-	ErrFeesMustBePositive            = errors.New("fees must be positive")
-	ErrSourceAccountNotFound         = errors.New("source account not found")
-	ErrDestinationAccountNotFound    = errors.New("destination account not found")
-	ErrSourceAccountNotActive        = errors.New("source account is not active")
-	ErrDestinationAccountNotActive   = errors.New("destination account is not active")
+	ErrTransferNotFound                      = errors.New("transfer not found")
+	ErrTransferSourceAccountNotEnoughBalance = errors.New("source account does not have enough balance")
+	ErrTransferRateMultiplierMustBePositive  = errors.New("exchange rate multiplier must be positive")
+	ErrTransferFeesMustBePositive            = errors.New("fees must be positive")
+	ErrTransferSourceAccountNotFound         = errors.New("source account not found")
+	ErrTransferDestinationAccountNotFound    = errors.New("destination account not found")
+	ErrTransferSourceAccountNotActive        = errors.New("source account is not active")
+	ErrTransferDestinationAccountNotActive   = errors.New("destination account is not active")
+	ErrTransferNotATemplate                  = errors.New("transfer is not a template")
 )
 
 type Transfer struct {
@@ -24,11 +25,13 @@ type Transfer struct {
 	DestinationAccount     *Account `json:"destination_account"`
 	ExchangeRateMultiplier float32  `json:"exchange_rate_multiplier"`
 	// Fees are calculated based on the amount and currency of the source account.
-	Fees                float32      `json:"fees"`
-	OutgoingTransaction *Transaction `json:"outgoing_transaction"`
-	IncomingTransaction *Transaction `json:"incoming_transaction"`
-	TransferType        TransferType `json:"transfer_type"`
-	CreatedAt           time.Time    `json:"created_at"`
+	Fees                      float32                   `json:"fees"`
+	OutgoingTransaction       *Transaction              `json:"outgoing_transaction"`
+	IncomingTransaction       *Transaction              `json:"incoming_transaction"`
+	TransferType              TransferType              `json:"transfer_type"`
+	Tags                      *[]*Tag                   `json:"tags,omitempty"`
+	RecurrenceTransactionInfo *RecurrentTransactionInfo `json:"recurrence_transaction_info,omitempty"`
+	AuditData
 }
 
 type TransferType string
@@ -48,23 +51,30 @@ const (
 
 func (t *Transfer) Validate() error {
 	if !t.SourceAccount.Active {
-		return ErrSourceAccountNotActive
+		return ErrTransferSourceAccountNotActive
 	}
 
 	if !t.DestinationAccount.Active {
-		return ErrDestinationAccountNotActive
+		return ErrTransferDestinationAccountNotActive
 	}
 
 	if t.ExchangeRateMultiplier <= 0 {
-		return ErrRateMultiplierMustBePositive
+		return ErrTransferRateMultiplierMustBePositive
 	}
 
 	if t.Fees < 0 {
-		return ErrFeesMustBePositive
+		return ErrTransferFeesMustBePositive
 	}
 
 	if t.SourceAccount.CurrentBalance < t.OutgoingTransaction.Amount {
-		return ErrSourceAccountNotEnoughBalance
+		return ErrTransferSourceAccountNotEnoughBalance
+	}
+
+	if errIncoming := t.IncomingTransaction.Validate(); errIncoming != nil {
+		return errIncoming
+	}
+	if errOutgoing := t.OutgoingTransaction.Validate(); errOutgoing != nil {
+		return errOutgoing
 	}
 
 	return nil

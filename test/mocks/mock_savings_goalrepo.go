@@ -11,7 +11,7 @@ package mocks
 
 import (
 	context "context"
-	"proletariat-budget-core/core/domain/coreentity"
+	coreentity "proletariat-budget-core/core/domain/coreentity"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
@@ -114,6 +114,20 @@ func (mr *MockSavingsGoalMockRecorder) DeleteContribution(ctx, id any) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteContribution", reflect.TypeOf((*MockSavingsGoal)(nil).DeleteContribution), ctx, id)
 }
 
+// DeleteTemplate mocks base method.
+func (m *MockSavingsGoal) DeleteTemplate(ctx context.Context, template coreentity.SavingsContribution) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteTemplate", ctx, template)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteTemplate indicates an expected call of DeleteTemplate.
+func (mr *MockSavingsGoalMockRecorder) DeleteTemplate(ctx, template any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTemplate", reflect.TypeOf((*MockSavingsGoal)(nil).DeleteTemplate), ctx, template)
+}
+
 // DeleteWithdrawal mocks base method.
 func (m *MockSavingsGoal) DeleteWithdrawal(ctx context.Context, id string) error {
 	m.ctrl.T.Helper()
@@ -171,6 +185,21 @@ func (m *MockSavingsGoal) GetWithdrawalByID(ctx context.Context, id string) (*co
 func (mr *MockSavingsGoalMockRecorder) GetWithdrawalByID(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWithdrawalByID", reflect.TypeOf((*MockSavingsGoal)(nil).GetWithdrawalByID), ctx, id)
+}
+
+// IsActive mocks base method.
+func (m *MockSavingsGoal) IsActive(ctx context.Context, id string) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsActive", ctx, id)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// IsActive indicates an expected call of IsActive.
+func (mr *MockSavingsGoalMockRecorder) IsActive(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsActive", reflect.TypeOf((*MockSavingsGoal)(nil).IsActive), ctx, id)
 }
 
 // List mocks base method.
@@ -243,4 +272,18 @@ func (m *MockSavingsGoal) Update(ctx context.Context, id string, savingsGoal cor
 func (mr *MockSavingsGoalMockRecorder) Update(ctx, id, savingsGoal any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockSavingsGoal)(nil).Update), ctx, id, savingsGoal)
+}
+
+// UpdateTemplate mocks base method.
+func (m *MockSavingsGoal) UpdateTemplate(ctx context.Context, template coreentity.SavingsContribution) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateTemplate", ctx, template)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateTemplate indicates an expected call of UpdateTemplate.
+func (mr *MockSavingsGoalMockRecorder) UpdateTemplate(ctx, template any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTemplate", reflect.TypeOf((*MockSavingsGoal)(nil).UpdateTemplate), ctx, template)
 }

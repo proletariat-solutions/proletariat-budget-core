@@ -11,7 +11,7 @@ package mocks
 
 import (
 	context "context"
-	domain "proletariat-budget-core/core/domain/coreentity"
+	coreentity "proletariat-budget-core/core/domain/coreentity"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
@@ -42,7 +42,7 @@ func (m *MockRecurrencePattern) EXPECT() *MockRecurrencePatternMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockRecurrencePattern) Create(ctx context.Context, recurrencePattern domain.RecurrencePattern) (string, error) {
+func (m *MockRecurrencePattern) Create(ctx context.Context, recurrencePattern coreentity.RecurrencePattern) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", ctx, recurrencePattern)
 	ret0, _ := ret[0].(string)
@@ -71,10 +71,10 @@ func (mr *MockRecurrencePatternMockRecorder) Delete(ctx, id any) *gomock.Call {
 }
 
 // GetByID mocks base method.
-func (m *MockRecurrencePattern) GetByID(ctx context.Context, id string) (*domain.RecurrencePattern, error) {
+func (m *MockRecurrencePattern) GetByID(ctx context.Context, id string) (*coreentity.RecurrencePattern, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", ctx, id)
-	ret0, _ := ret[0].(*domain.RecurrencePattern)
+	ret0, _ := ret[0].(*coreentity.RecurrencePattern)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -85,11 +85,56 @@ func (mr *MockRecurrencePatternMockRecorder) GetByID(ctx, id any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockRecurrencePattern)(nil).GetByID), ctx, id)
 }
 
+// GetFailedJobs mocks base method.
+func (m *MockRecurrencePattern) GetFailedJobs(ctx context.Context) ([]coreentity.RecurrencePattern, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFailedJobs", ctx)
+	ret0, _ := ret[0].([]coreentity.RecurrencePattern)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFailedJobs indicates an expected call of GetFailedJobs.
+func (mr *MockRecurrencePatternMockRecorder) GetFailedJobs(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFailedJobs", reflect.TypeOf((*MockRecurrencePattern)(nil).GetFailedJobs), ctx)
+}
+
+// GetTodayJobs mocks base method.
+func (m *MockRecurrencePattern) GetTodayJobs(ctx context.Context) ([]coreentity.RecurrencePattern, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTodayJobs", ctx)
+	ret0, _ := ret[0].([]coreentity.RecurrencePattern)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTodayJobs indicates an expected call of GetTodayJobs.
+func (mr *MockRecurrencePatternMockRecorder) GetTodayJobs(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTodayJobs", reflect.TypeOf((*MockRecurrencePattern)(nil).GetTodayJobs), ctx)
+}
+
+// IsActive mocks base method.
+func (m *MockRecurrencePattern) IsActive(ctx context.Context, id string) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsActive", ctx, id)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// IsActive indicates an expected call of IsActive.
+func (mr *MockRecurrencePatternMockRecorder) IsActive(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsActive", reflect.TypeOf((*MockRecurrencePattern)(nil).IsActive), ctx, id)
+}
+
 // List mocks base method.
-func (m *MockRecurrencePattern) List(ctx context.Context) ([]domain.RecurrencePattern, error) {
+func (m *MockRecurrencePattern) List(ctx context.Context) ([]coreentity.RecurrencePattern, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", ctx)
-	ret0, _ := ret[0].([]domain.RecurrencePattern)
+	ret0, _ := ret[0].([]coreentity.RecurrencePattern)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -101,15 +146,15 @@ func (mr *MockRecurrencePatternMockRecorder) List(ctx any) *gomock.Call {
 }
 
 // Update mocks base method.
-func (m *MockRecurrencePattern) Update(ctx context.Context, id string, recurrencePattern domain.RecurrencePattern) error {
+func (m *MockRecurrencePattern) Update(ctx context.Context, recurrencePattern coreentity.RecurrencePattern) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", ctx, id, recurrencePattern)
+	ret := m.ctrl.Call(m, "Update", ctx, recurrencePattern)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update.
-func (mr *MockRecurrencePatternMockRecorder) Update(ctx, id, recurrencePattern any) *gomock.Call {
+func (mr *MockRecurrencePatternMockRecorder) Update(ctx, recurrencePattern any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRecurrencePattern)(nil).Update), ctx, id, recurrencePattern)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRecurrencePattern)(nil).Update), ctx, recurrencePattern)
 }

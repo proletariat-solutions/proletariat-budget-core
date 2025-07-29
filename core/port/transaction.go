@@ -29,4 +29,8 @@ type Transaction interface {
 		*coreentity.TransactionList,
 		error,
 	)
+	Delete(
+		ctx context.Context,
+		id string,
+	) error
 }

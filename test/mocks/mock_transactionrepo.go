@@ -11,7 +11,7 @@ package mocks
 
 import (
 	context "context"
-	domain "proletariat-budget-core/core/domain/coreentity"
+	coreentity "proletariat-budget-core/core/domain/coreentity"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
@@ -42,7 +42,7 @@ func (m *MockTransaction) EXPECT() *MockTransactionMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockTransaction) Create(ctx context.Context, transaction domain.Transaction) (string, error) {
+func (m *MockTransaction) Create(ctx context.Context, transaction coreentity.Transaction) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", ctx, transaction)
 	ret0, _ := ret[0].(string)
@@ -56,11 +56,25 @@ func (mr *MockTransactionMockRecorder) Create(ctx, transaction any) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockTransaction)(nil).Create), ctx, transaction)
 }
 
+// Delete mocks base method.
+func (m *MockTransaction) Delete(ctx context.Context, id string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockTransactionMockRecorder) Delete(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockTransaction)(nil).Delete), ctx, id)
+}
+
 // GetByID mocks base method.
-func (m *MockTransaction) GetByID(ctx context.Context, id string) (*domain.Transaction, error) {
+func (m *MockTransaction) GetByID(ctx context.Context, id string) (*coreentity.Transaction, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", ctx, id)
-	ret0, _ := ret[0].(*domain.Transaction)
+	ret0, _ := ret[0].(*coreentity.Transaction)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -72,10 +86,10 @@ func (mr *MockTransactionMockRecorder) GetByID(ctx, id any) *gomock.Call {
 }
 
 // List mocks base method.
-func (m *MockTransaction) List(ctx context.Context, params domain.ListTransactionsParams) (*domain.TransactionList, error) {
+func (m *MockTransaction) List(ctx context.Context, params coreentity.ListTransactionsParams) (*coreentity.TransactionList, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", ctx, params)
-	ret0, _ := ret[0].(*domain.TransactionList)
+	ret0, _ := ret[0].(*coreentity.TransactionList)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

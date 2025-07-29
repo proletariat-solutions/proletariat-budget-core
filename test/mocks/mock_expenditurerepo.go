@@ -11,7 +11,7 @@ package mocks
 
 import (
 	context "context"
-	domain "proletariat-budget-core/core/domain/coreentity"
+	coreentity "proletariat-budget-core/core/domain/coreentity"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
@@ -42,7 +42,7 @@ func (m *MockExpenditure) EXPECT() *MockExpenditureMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockExpenditure) Create(ctx context.Context, expenditure domain.Expenditure) (string, error) {
+func (m *MockExpenditure) Create(ctx context.Context, expenditure coreentity.Expenditure) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", ctx, expenditure)
 	ret0, _ := ret[0].(string)
@@ -56,11 +56,25 @@ func (mr *MockExpenditureMockRecorder) Create(ctx, expenditure any) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockExpenditure)(nil).Create), ctx, expenditure)
 }
 
+// DeleteTemplate mocks base method.
+func (m *MockExpenditure) DeleteTemplate(ctx context.Context, template coreentity.Expenditure) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteTemplate", ctx, template)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteTemplate indicates an expected call of DeleteTemplate.
+func (mr *MockExpenditureMockRecorder) DeleteTemplate(ctx, template any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTemplate", reflect.TypeOf((*MockExpenditure)(nil).DeleteTemplate), ctx, template)
+}
+
 // FindExpenditures mocks base method.
-func (m *MockExpenditure) FindExpenditures(ctx context.Context, queryParams domain.ExpenditureListParams) (*domain.ExpenditureList, error) {
+func (m *MockExpenditure) FindExpenditures(ctx context.Context, queryParams coreentity.ExpenditureListParams) (*coreentity.ExpenditureList, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindExpenditures", ctx, queryParams)
-	ret0, _ := ret[0].(*domain.ExpenditureList)
+	ret0, _ := ret[0].(*coreentity.ExpenditureList)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -72,10 +86,10 @@ func (mr *MockExpenditureMockRecorder) FindExpenditures(ctx, queryParams any) *g
 }
 
 // GetByID mocks base method.
-func (m *MockExpenditure) GetByID(ctx context.Context, id string) (*domain.Expenditure, error) {
+func (m *MockExpenditure) GetByID(ctx context.Context, id string) (*coreentity.Expenditure, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", ctx, id)
-	ret0, _ := ret[0].(*domain.Expenditure)
+	ret0, _ := ret[0].(*coreentity.Expenditure)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -84,4 +98,18 @@ func (m *MockExpenditure) GetByID(ctx context.Context, id string) (*domain.Expen
 func (mr *MockExpenditureMockRecorder) GetByID(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockExpenditure)(nil).GetByID), ctx, id)
+}
+
+// UpdateTemplate mocks base method.
+func (m *MockExpenditure) UpdateTemplate(ctx context.Context, template coreentity.Expenditure) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateTemplate", ctx, template)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateTemplate indicates an expected call of UpdateTemplate.
+func (mr *MockExpenditureMockRecorder) UpdateTemplate(ctx, template any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTemplate", reflect.TypeOf((*MockExpenditure)(nil).UpdateTemplate), ctx, template)
 }

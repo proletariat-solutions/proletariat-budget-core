@@ -11,7 +11,7 @@ package mocks
 
 import (
 	context "context"
-	domain "proletariat-budget-core/core/domain/coreentity"
+	coreentity "proletariat-budget-core/core/domain/coreentity"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
@@ -42,7 +42,7 @@ func (m *MockIngress) EXPECT() *MockIngressMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockIngress) Create(ctx context.Context, ingress domain.Ingress) (string, error) {
+func (m *MockIngress) Create(ctx context.Context, ingress coreentity.Ingress) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", ctx, ingress)
 	ret0, _ := ret[0].(string)
@@ -56,11 +56,25 @@ func (mr *MockIngressMockRecorder) Create(ctx, ingress any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockIngress)(nil).Create), ctx, ingress)
 }
 
+// DeleteTemplate mocks base method.
+func (m *MockIngress) DeleteTemplate(ctx context.Context, template coreentity.Ingress) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteTemplate", ctx, template)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteTemplate indicates an expected call of DeleteTemplate.
+func (mr *MockIngressMockRecorder) DeleteTemplate(ctx, template any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTemplate", reflect.TypeOf((*MockIngress)(nil).DeleteTemplate), ctx, template)
+}
+
 // GetByID mocks base method.
-func (m *MockIngress) GetByID(ctx context.Context, id string) (domain.Ingress, error) {
+func (m *MockIngress) GetByID(ctx context.Context, id string) (coreentity.Ingress, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", ctx, id)
-	ret0, _ := ret[0].(domain.Ingress)
+	ret0, _ := ret[0].(coreentity.Ingress)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -72,10 +86,10 @@ func (mr *MockIngressMockRecorder) GetByID(ctx, id any) *gomock.Call {
 }
 
 // List mocks base method.
-func (m *MockIngress) List(ctx context.Context, params domain.IngressListParams) (domain.IngressList, error) {
+func (m *MockIngress) List(ctx context.Context, params coreentity.IngressListParams) (coreentity.IngressList, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List", ctx, params)
-	ret0, _ := ret[0].(domain.IngressList)
+	ret0, _ := ret[0].(coreentity.IngressList)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -84,4 +98,18 @@ func (m *MockIngress) List(ctx context.Context, params domain.IngressListParams)
 func (mr *MockIngressMockRecorder) List(ctx, params any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockIngress)(nil).List), ctx, params)
+}
+
+// UpdateTemplate mocks base method.
+func (m *MockIngress) UpdateTemplate(ctx context.Context, template coreentity.Ingress) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateTemplate", ctx, template)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateTemplate indicates an expected call of UpdateTemplate.
+func (mr *MockIngressMockRecorder) UpdateTemplate(ctx, template any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTemplate", reflect.TypeOf((*MockIngress)(nil).UpdateTemplate), ctx, template)
 }

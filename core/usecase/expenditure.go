@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/rs/zerolog/log"
 	"proletariat-budget-core/core/domain/coreentity"
 	"proletariat-budget-core/core/port"
 )
@@ -38,10 +39,16 @@ func NewExpenditureUseCase(
 func (u *Expenditure) Create(
 	ctx context.Context,
 	expenditure coreentity.Expenditure,
+	recurrencePattern *coreentity.RecurrencePattern, // Optional, used only if expenditure is result of a recurring transaction
 ) (
 	*coreentity.Expenditure,
 	error,
 ) {
+	// Validate expenditure
+	if err := expenditure.Validate(); err != nil {
+		return nil, err
+	}
+
 	// Validate account
 	account, err := u.validateAccount(
 		ctx,
@@ -52,13 +59,16 @@ func (u *Expenditure) Create(
 	}
 
 	// Validate category
-	err = u.validateCategory(
+	category, err := u.validateCategory(
 		ctx,
 		expenditure.Category.ID,
 	)
 	if err != nil {
 		return nil, err
 	}
+
+	expenditure.Category = category
+
 	var expID string
 
 	errTx := u.txManager.WithDatabaseTransaction(
@@ -102,7 +112,16 @@ func (u *Expenditure) Create(
 				tagsRepo,
 			)
 			if errLink != nil {
-				return errLink
+				if recurrencePattern != nil {
+					// Logging and notifying error to the user, since this is a recoverable error
+					// TODO: notify user
+					log.Err(errLink).Msgf(
+						"Failed to link tags to expenditure %s",
+						expID,
+					)
+				} else {
+					return errLink
+				}
 			}
 
 			return nil
@@ -188,7 +207,10 @@ func (u *Expenditure) validateAccount(
 func (u *Expenditure) validateCategory(
 	ctx context.Context,
 	categoryID string,
-) error {
+) (
+	*coreentity.Category,
+	error,
+) {
 	category, err := u.categoryRepo.GetByID(
 		ctx,
 		categoryID,
@@ -198,17 +220,17 @@ func (u *Expenditure) validateCategory(
 			err,
 			port.ErrRecordNotFound,
 		) {
-			return coreentity.ErrCategoryNotFound
+			return nil, coreentity.ErrCategoryNotFound
 		}
 
-		return err
+		return nil, err
 	}
 
 	if !category.Active {
-		return coreentity.ErrCategoryInactive
+		return nil, coreentity.ErrCategoryInactive
 	}
 
-	return nil
+	return category, nil
 }
 
 func (u *Expenditure) processTransaction(

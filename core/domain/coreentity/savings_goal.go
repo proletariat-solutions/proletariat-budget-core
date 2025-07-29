@@ -26,8 +26,7 @@ type SavingsGoal struct {
 	Tags                    *[]*Tag           `json:"tags,omitempty"`
 	Status                  SavingsGoalStatus `json:"status"`
 	ProjectedCompletionDate time.Time         `json:"projected_completion_date"`
-	CreatedAt               time.Time         `json:"created_at"`
-	UpdatedAt               time.Time         `json:"updated_at"`
+	AuditData
 }
 
 type SavingsGoalStatus string
@@ -81,11 +80,9 @@ func (sg *SavingsGoal) CalculatePercentCompleted() {
 type SavingOperation struct {
 	ID          string       `json:"id"`
 	SavingsGoal *SavingsGoal `json:"savings_goal"`
-	Date        *time.Time   `json:"date"`
 	Transfer    *Transfer    `json:"transfer,omitempty"`
 	Tags        *[]*Tag      `json:"tags,omitempty"`
 	CreatedAt   time.Time    `json:"created_at"`
-	UpdatedAt   time.Time    `json:"updated_at"`
 }
 
 type ListSavingsTransactionsParams struct {

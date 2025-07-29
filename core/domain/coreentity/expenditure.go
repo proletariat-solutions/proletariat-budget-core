@@ -8,19 +8,32 @@ import (
 )
 
 type Expenditure struct {
-	ID                      string       `json:"id"`
-	Category                *Category    `json:"category"`
-	Declared                bool         `json:"declared"`
-	Planned                 bool         `json:"planned"`
-	Transaction             *Transaction `json:"transaction,omitempty"`
-	Tags                    *[]*Tag      `json:"tags,omitempty"`
-	Date                    time.Time    `json:"date"`
-	FromRecurrencePatternID *string      `json:"from_recurrence_pattern,omitempty"`
+	ID                        string                    `json:"id"`
+	Category                  *Category                 `json:"category"`
+	Declared                  bool                      `json:"declared"`
+	Planned                   bool                      `json:"planned"`
+	Transaction               *Transaction              `json:"transaction,omitempty"`
+	Tags                      *[]*Tag                   `json:"tags,omitempty"`
+	RecurrenceTransactionInfo *RecurrentTransactionInfo `json:"recurrence_transaction_info,omitempty"`
+	AuditData
 }
 
 var (
-	ErrExpenditureNotFound = errors.New("expenditure not found")
+	ErrExpenditureNotFound       = errors.New("expenditure not found")
+	ErrExpenditureCategoryNil    = errors.New("category is required")
+	ErrExpenditureTransactionNil = errors.New("transaction is required")
 )
+
+func (e *Expenditure) Validate() error {
+	if e.Category == nil {
+		return ErrExpenditureCategoryNil
+	}
+	if e.Transaction == nil {
+		return ErrExpenditureTransactionNil
+	}
+
+	return e.Transaction.Validate()
+}
 
 type ExpenditureList struct {
 	Expenditures []Expenditure     `json:"expenditures"`
