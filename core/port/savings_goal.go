@@ -17,7 +17,6 @@ type SavingsGoal interface {
 	)
 	Update(
 		ctx context.Context,
-		id string,
 		savingsGoal coreentity.SavingsGoal,
 	) error
 	Delete(
@@ -31,8 +30,11 @@ type SavingsGoal interface {
 		*coreentity.SavingsGoal,
 		error,
 	)
-	List(ctx context.Context) (
-		[]coreentity.SavingsGoal,
+	List(
+		ctx context.Context,
+		params coreentity.ListSavingsGoalsParams,
+	) (
+		coreentity.SavingsGoalsList,
 		error,
 	)
 	IsActive(
@@ -58,10 +60,6 @@ type SavingsGoal interface {
 		string,
 		error,
 	)
-	DeleteWithdrawal(
-		ctx context.Context,
-		id string,
-	) error
 	GetWithdrawalByID(
 		ctx context.Context,
 		id string,
@@ -69,7 +67,6 @@ type SavingsGoal interface {
 		*coreentity.SavingsWithdrawal,
 		error,
 	)
-
 	CreateContribution(
 		ctx context.Context,
 		contribution coreentity.SavingsContribution,
@@ -77,10 +74,6 @@ type SavingsGoal interface {
 		string,
 		error,
 	)
-	DeleteContribution(
-		ctx context.Context,
-		id string,
-	) error
 	GetContributionByID(
 		ctx context.Context,
 		id string,
@@ -96,12 +89,4 @@ type SavingsGoal interface {
 		*coreentity.SavingsTransactionList,
 		error,
 	)
-	UpdateTemplate(
-		ctx context.Context,
-		template coreentity.SavingsContribution,
-	) error
-	DeleteTemplate(
-		ctx context.Context,
-		template coreentity.SavingsContribution,
-	) error
 }

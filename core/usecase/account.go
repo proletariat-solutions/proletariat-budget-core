@@ -30,9 +30,13 @@ func (a *Account) Create(
 	*string,
 	error,
 ) {
+	validationErr := account.Validate()
+	if validationErr != nil {
+		return nil, validationErr
+	}
 	householdMember, err := a.householdMemberRepo.GetByID(
 		ctx,
-		*account.OwnerID,
+		account.Owner.ID,
 	)
 	if err != nil {
 		if errors.Is(
@@ -90,6 +94,10 @@ func (a *Account) Update(
 	*coreentity.Account,
 	error,
 ) {
+	validationErr := account.Validate()
+	if validationErr != nil {
+		return nil, validationErr
+	}
 	err := a.accountRepo.Update(
 		ctx,
 		account,

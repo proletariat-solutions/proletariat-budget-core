@@ -24,6 +24,44 @@ var (
 	ErrExpenditureTransactionNil = errors.New("transaction is required")
 )
 
+func (e *Expenditure) Clone() *Expenditure {
+	txClone := e.Transaction.Clone()
+	now := time.Now()
+	return &Expenditure{
+		ID:          "",
+		Category:    e.Category,
+		Declared:    e.Declared,
+		Planned:     e.Planned,
+		Transaction: txClone,
+		Tags:        e.Tags,
+		RecurrenceTransactionInfo: &RecurrentTransactionInfo{
+			FromRecurrencePatternID: e.RecurrenceTransactionInfo.FromRecurrencePatternID,
+			IsTemplate:              false,
+		},
+		AuditData: AuditData{
+			Date:      &now,
+			CreatedBy: e.AuditData.CreatedBy, // TODO: Take the actual user doing the rollback after auth implementation
+		},
+	}
+}
+
+func (e *Expenditure) Rollback(rollbackMessage string) *Expenditure {
+	txRollback := e.Transaction.Rollback(rollbackMessage)
+	now := time.Now()
+	return &Expenditure{
+		ID:                        e.ID,
+		Category:                  e.Category,
+		Declared:                  e.Declared,
+		Planned:                   e.Planned,
+		Transaction:               txRollback,
+		Tags:                      e.Tags,
+		RecurrenceTransactionInfo: e.RecurrenceTransactionInfo,
+		AuditData: AuditData{
+			Date:      &now,
+			CreatedBy: e.AuditData.CreatedBy, // TODO: Take the actual user doing the rollback after auth implementation
+		},
+	}
+}
 func (e *Expenditure) Validate() error {
 	if e.Category == nil {
 		return ErrExpenditureCategoryNil

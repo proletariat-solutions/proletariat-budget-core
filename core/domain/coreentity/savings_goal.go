@@ -19,10 +19,6 @@ type SavingsGoal struct {
 	PercentCompleted        float32           `json:"percent_completed"`
 	Account                 *Account          `json:"account"`
 	Priority                uint              `json:"priority"`
-	AutoContribute          bool              `json:"auto_contribute"`
-	AutoContributeAmount    *float32          `json:"auto_contribute_amount"`
-	AutoContributeFrequency *Frequency        `json:"auto_contribute_frequency"`
-	AutoContributeInterval  *uint             `json:"auto_contribute_interval"`
 	Tags                    *[]*Tag           `json:"tags,omitempty"`
 	Status                  SavingsGoalStatus `json:"status"`
 	ProjectedCompletionDate time.Time         `json:"projected_completion_date"`
@@ -48,6 +44,8 @@ var (
 	ErrSavingsGoalTargetDateMustBeInFuture       = errors.New("savings goal target date must be in the future")
 	ErrSavingsGoalInitialAmountMustBeNonNegative = errors.New("savings goal initial amount must be non-negative")
 	ErrSavingsGoalCurrentAmountMustBeNonNegative = errors.New("savings goal current amount must be non-negative")
+	ErrSavingsGoalInactive                       = errors.New("savings goal is inactive")
+	ErrSavingsGoalAbandoned                      = errors.New("savings goal is abandoned")
 )
 
 func (sg *SavingsGoal) Validate() error {
@@ -77,17 +75,20 @@ func (sg *SavingsGoal) CalculatePercentCompleted() {
 	sg.PercentCompleted = (sg.CurrentAmount / sg.TargetAmount) * 100
 }
 
-type SavingOperation struct {
-	ID          string       `json:"id"`
-	SavingsGoal *SavingsGoal `json:"savings_goal"`
-	Transfer    *Transfer    `json:"transfer,omitempty"`
-	Tags        *[]*Tag      `json:"tags,omitempty"`
-	CreatedAt   time.Time    `json:"created_at"`
+type ListSavingsGoalsParams struct {
+	AccountID *string            `json:"account_id"`
+	Completed *bool              `json:"completed"`
+	Tags      *[]Tag             `json:"tags"`
+	Status    *SavingsGoalStatus `json:"status"`
+	misc.ListParams
 }
 
-type ListSavingsTransactionsParams struct {
+type SavingsGoalsList struct {
+	SavingsGoals []SavingsGoal     `json:"savings_goals"`
+	Metadata     misc.ListMetadata `json:"metadata"`
 }
 
+type ListSavingsTransactionsParams struct{}
 type SavingsTransactionList struct {
 	Metadata misc.ListMetadata `json:"metadata"`
 }

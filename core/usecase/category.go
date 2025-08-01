@@ -75,6 +75,9 @@ func (uc *Category) CreateCategory(
 	*coreentity.Category,
 	error,
 ) {
+	if err := category.Validate(); err != nil {
+		return nil, err
+	}
 	id, err := uc.categoryRepo.Create(
 		ctx,
 		category,

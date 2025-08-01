@@ -261,17 +261,17 @@ func (mr *MockSavingsGoalMockRecorder) MarkAsCompleted(ctx, id any) *gomock.Call
 }
 
 // Update mocks base method.
-func (m *MockSavingsGoal) Update(ctx context.Context, id string, savingsGoal coreentity.SavingsGoal) error {
+func (m *MockSavingsGoal) Update(ctx context.Context, savingsGoal coreentity.SavingsGoal) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", ctx, id, savingsGoal)
+	ret := m.ctrl.Call(m, "Update", ctx, savingsGoal)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update.
-func (mr *MockSavingsGoalMockRecorder) Update(ctx, id, savingsGoal any) *gomock.Call {
+func (mr *MockSavingsGoalMockRecorder) Update(ctx, savingsGoal any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockSavingsGoal)(nil).Update), ctx, id, savingsGoal)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockSavingsGoal)(nil).Update), ctx, savingsGoal)
 }
 
 // UpdateTemplate mocks base method.

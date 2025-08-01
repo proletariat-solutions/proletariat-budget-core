@@ -30,12 +30,4 @@ type Ingress interface {
 		coreentity.IngressList,
 		error,
 	)
-	UpdateTemplate(
-		ctx context.Context,
-		template coreentity.Ingress,
-	) error
-	DeleteTemplate(
-		ctx context.Context,
-		template coreentity.Ingress,
-	) error
 }

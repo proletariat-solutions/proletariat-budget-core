@@ -28,7 +28,15 @@ func TestAccountUseCase_Create_MemberNotFound(t *testing.T) {
 
 	ownerID := "member-123"
 	account := coreentity.Account{
-		OwnerID: &ownerID,
+		Name: "Savings Account",
+		Owner: &coreentity.HouseholdMember{
+			ID: ownerID,
+		},
+		Currency: &coreentity.Currency{
+			ID:     "currency-123",
+			Name:   "United States Dollar",
+			Symbol: "$",
+		},
 	}
 
 	householdMemberRepo.EXPECT().GetByID(
@@ -70,7 +78,15 @@ func TestAccountUseCase_Create_UnexpectedError(t *testing.T) {
 
 	ownerID := "member-123"
 	account := coreentity.Account{
-		OwnerID: &ownerID,
+		Name: "Savings Account",
+		Owner: &coreentity.HouseholdMember{
+			ID: ownerID,
+		},
+		Currency: &coreentity.Currency{
+			ID:     "currency-123",
+			Name:   "United States Dollar",
+			Symbol: "$",
+		},
 	}
 
 	unexpectedError := errors.New("database connection error")
@@ -113,7 +129,15 @@ func TestAccountUseCase_Create_MemberInactive(t *testing.T) {
 
 	ownerID := "member-123"
 	account := coreentity.Account{
-		OwnerID: &ownerID,
+		Name: "Savings Account",
+		Owner: &coreentity.HouseholdMember{
+			ID: ownerID,
+		},
+		Currency: &coreentity.Currency{
+			ID:     "currency-123",
+			Name:   "United States Dollar",
+			Symbol: "$",
+		},
 	}
 
 	inactiveMember := &coreentity.HouseholdMember{
@@ -159,7 +183,15 @@ func TestAccountUseCase_Create_Success(t *testing.T) {
 
 	ownerID := "member-123"
 	account := coreentity.Account{
-		OwnerID: &ownerID,
+		Name: "Savings Account",
+		Owner: &coreentity.HouseholdMember{
+			ID: ownerID,
+		},
+		Currency: &coreentity.Currency{
+			ID:     "currency-123",
+			Name:   "United States Dollar",
+			Symbol: "$",
+		},
 	}
 
 	activeMember := &coreentity.HouseholdMember{
@@ -219,7 +251,15 @@ func TestAccountUseCase_Create_ForeignKeyUnknownConstraint(t *testing.T) {
 
 	ownerID := "member-123"
 	account := coreentity.Account{
-		OwnerID: &ownerID,
+		Name: "Savings Account",
+		Owner: &coreentity.HouseholdMember{
+			ID: ownerID,
+		},
+		Currency: &coreentity.Currency{
+			ID:     "currency-123",
+			Name:   "United States Dollar",
+			Symbol: "$",
+		},
 	}
 
 	activeMember := &coreentity.HouseholdMember{
@@ -275,7 +315,15 @@ func TestAccountUseCase_Create_RepoCreateError(t *testing.T) {
 
 	ownerID := "member-123"
 	account := coreentity.Account{
-		OwnerID: &ownerID,
+		Name: "Savings Account",
+		Owner: &coreentity.HouseholdMember{
+			ID: ownerID,
+		},
+		Currency: &coreentity.Currency{
+			ID:     "currency-123",
+			Name:   "United States Dollar",
+			Symbol: "$",
+		},
 	}
 
 	activeMember := &coreentity.HouseholdMember{
@@ -331,7 +379,15 @@ func TestAccountUseCase_Create_SetsAccountOwner(t *testing.T) {
 
 	ownerID := "member-123"
 	account := coreentity.Account{
-		OwnerID: &ownerID,
+		Name: "Savings Account",
+		Owner: &coreentity.HouseholdMember{
+			ID: ownerID,
+		},
+		Currency: &coreentity.Currency{
+			ID:     "currency-123",
+			Name:   "United States Dollar",
+			Symbol: "$",
+		},
 	}
 
 	activeMember := &coreentity.HouseholdMember{
@@ -409,8 +465,15 @@ func TestAccountUseCase_Create_PassesCorrectContextAndAccount(t *testing.T) {
 
 	ownerID := "member-123"
 	account := coreentity.Account{
-		OwnerID: &ownerID,
-		Name:    "Test Account",
+		Owner: &coreentity.HouseholdMember{
+			ID: ownerID,
+		},
+		Name: "Test Account",
+		Currency: &coreentity.Currency{
+			ID:     "currency-123",
+			Name:   "United States Dollar",
+			Symbol: "$",
+		},
 	}
 
 	activeMember := &coreentity.HouseholdMember{
@@ -454,8 +517,8 @@ func TestAccountUseCase_Create_PassesCorrectContextAndAccount(t *testing.T) {
 			)
 			assert.Equal(
 				t,
-				account.OwnerID,
-				passedAccount.OwnerID,
+				account.Owner.ID,
+				passedAccount.Owner.ID,
 			)
 			assert.Equal(
 				t,
@@ -502,8 +565,15 @@ func TestAccountUseCase_Create_ReturnsCorrectID(t *testing.T) {
 
 	ownerID := "member-123"
 	account := coreentity.Account{
-		OwnerID: &ownerID,
-		Name:    "Test Account",
+		Owner: &coreentity.HouseholdMember{
+			ID: ownerID,
+		},
+		Currency: &coreentity.Currency{
+			ID:     "currency-123",
+			Name:   "United States Dollar",
+			Symbol: "$",
+		},
+		Name: "Test Account",
 	}
 
 	activeMember := &coreentity.HouseholdMember{
@@ -686,11 +756,9 @@ func TestAccountUseCase_GetByID_ReturnsAccountWithAllFields(t *testing.T) {
 	)
 
 	accountID := "account-123"
-	ownerID := "member-456"
 	expectedAccount := &coreentity.Account{
 		ID:             &accountID,
 		Name:           "Test Account",
-		OwnerID:        &ownerID,
 		CurrentBalance: 1000.50,
 		InitialBalance: 500.25,
 		Active:         true,
@@ -738,8 +806,8 @@ func TestAccountUseCase_GetByID_ReturnsAccountWithAllFields(t *testing.T) {
 	)
 	assert.Equal(
 		t,
-		expectedAccount.OwnerID,
-		result.OwnerID,
+		expectedAccount.Owner.ID,
+		result.Owner.ID,
 	)
 	assert.Equal(
 		t,
@@ -782,6 +850,17 @@ func TestAccountUseCase_Update_Success(t *testing.T) {
 	account := coreentity.Account{
 		ID:   &accountID,
 		Name: "Updated Account",
+		Currency: &coreentity.Currency{
+			ID:     "currency-456",
+			Name:   "United States Dollar",
+			Symbol: "$",
+		},
+		Owner: &coreentity.HouseholdMember{
+			ID:        "member-456",
+			FirstName: "John",
+			LastName:  "Doe",
+			Active:    true,
+		},
 	}
 
 	updatedAccount := &coreentity.Account{
@@ -789,6 +868,17 @@ func TestAccountUseCase_Update_Success(t *testing.T) {
 		Name:           "Updated Account",
 		CurrentBalance: 1500.75,
 		Active:         true,
+		Currency: &coreentity.Currency{
+			ID:     "currency-456",
+			Name:   "United States Dollar",
+			Symbol: "$",
+		},
+		Owner: &coreentity.HouseholdMember{
+			ID:        "member-456",
+			FirstName: "John",
+			LastName:  "Doe",
+			Active:    true,
+		},
 	}
 
 	accountRepo.EXPECT().Update(
@@ -842,6 +932,17 @@ func TestAccountUseCase_Update_GetByIDFailsWithErrRecordNotFoundAfterSuccessfulU
 	account := coreentity.Account{
 		ID:   &accountID,
 		Name: "Updated Account",
+		Currency: &coreentity.Currency{
+			ID:     "currency-456",
+			Name:   "United States Dollar",
+			Symbol: "$",
+		},
+		Owner: &coreentity.HouseholdMember{
+			ID:        "member-456",
+			FirstName: "John",
+			LastName:  "Doe",
+			Active:    true,
+		},
 	}
 
 	accountRepo.EXPECT().Update(
@@ -892,6 +993,17 @@ func TestAccountUseCase_Update_GetByIDFailsWithUnexpectedErrorAfterSuccessfulUpd
 	account := coreentity.Account{
 		ID:   &accountID,
 		Name: "Updated Account",
+		Currency: &coreentity.Currency{
+			ID:     "currency-456",
+			Name:   "United States Dollar",
+			Symbol: "$",
+		},
+		Owner: &coreentity.HouseholdMember{
+			ID:        "member-456",
+			FirstName: "John",
+			LastName:  "Doe",
+			Active:    true,
+		},
 	}
 
 	unexpectedError := errors.New("database connection error")
@@ -943,6 +1055,17 @@ func TestAccountUseCase_Update_ReturnsOriginalErrorWhenUpdateFailsWithNonForeign
 	account := coreentity.Account{
 		ID:   &accountID,
 		Name: "Updated Account",
+		Currency: &coreentity.Currency{
+			ID:     "currency-456",
+			Name:   "United States Dollar",
+			Symbol: "$",
+		},
+		Owner: &coreentity.HouseholdMember{
+			ID:        "member-456",
+			FirstName: "John",
+			LastName:  "Doe",
+			Active:    true,
+		},
 	}
 
 	unexpectedError := errors.New("database connection error")
@@ -2155,6 +2278,82 @@ func TestAccountUseCase_HasTransactions_ReturnsErrorFromRepo(t *testing.T) {
 	assert.Equal(
 		t,
 		unexpectedError,
+		err,
+	)
+}
+func TestAccountUseCase_Create_ReturnsValidationError(t *testing.T) {
+	// Arrange
+	ctx := context.Background()
+	controller := gomock.NewController(t)
+	accountRepo := mocks.NewMockAccount(controller)
+	householdMemberRepo := mocks.NewMockHouseholdMember(controller)
+	useCase := usecase.NewAccountUseCase(
+		accountRepo,
+		householdMemberRepo,
+	)
+
+	account := coreentity.Account{
+		// Invalid account - missing required fields to trigger validation error
+		Name: "", // Empty name should trigger validation error
+	}
+
+	validationError := errors.New("account name is required")
+
+	// Act
+	result, err := useCase.Create(
+		ctx,
+		account,
+	)
+
+	// Assert
+	assert.Nil(
+		t,
+		result,
+	)
+	assert.Equal(
+		t,
+		validationError,
+		err,
+	)
+}
+
+func TestAccountUseCase_Create_EmptyOwnerID(t *testing.T) {
+	// Arrange
+	ctx := context.Background()
+	controller := gomock.NewController(t)
+	accountRepo := mocks.NewMockAccount(controller)
+	householdMemberRepo := mocks.NewMockHouseholdMember(controller)
+	useCase := usecase.NewAccountUseCase(
+		accountRepo,
+		householdMemberRepo,
+	)
+
+	account := coreentity.Account{
+		Owner: &coreentity.HouseholdMember{
+			ID: "", // Empty owner ID
+		},
+		Currency: &coreentity.Currency{
+			ID:     "currency-123",
+			Name:   "United States Dollar",
+			Symbol: "$",
+		},
+		Name: "Test Account",
+	}
+
+	// Act
+	result, err := useCase.Create(
+		ctx,
+		account,
+	)
+
+	// Assert
+	assert.Nil(
+		t,
+		result,
+	)
+	assert.Equal(
+		t,
+		coreentity.ErrAccountOwnerRequired,
 		err,
 	)
 }

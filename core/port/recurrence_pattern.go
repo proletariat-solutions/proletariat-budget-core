@@ -55,4 +55,13 @@ type RecurrencePattern interface {
 		bool,
 		error,
 	)
+	UpdateTemplate(
+		ctx context.Context,
+		template coreentity.RecurrentTransactionTemplate,
+	) error
+
+	DeleteTemplate(
+		ctx context.Context,
+		template coreentity.RecurrentTransactionTemplate,
+	) error
 }

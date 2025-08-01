@@ -10,20 +10,22 @@ import (
 var (
 	ErrTransferNotFound                      = errors.New("transfer not found")
 	ErrTransferSourceAccountNotEnoughBalance = errors.New("source account does not have enough balance")
-	ErrTransferRateMultiplierMustBePositive  = errors.New("exchange rate multiplier must be positive")
+	ErrTransferRateMultiplierMustBePositive  = errors.New("exchange rate multiplier must be positive and not zero")
 	ErrTransferFeesMustBePositive            = errors.New("fees must be positive")
 	ErrTransferSourceAccountNotFound         = errors.New("source account not found")
 	ErrTransferDestinationAccountNotFound    = errors.New("destination account not found")
 	ErrTransferSourceAccountNotActive        = errors.New("source account is not active")
 	ErrTransferDestinationAccountNotActive   = errors.New("destination account is not active")
 	ErrTransferNotATemplate                  = errors.New("transfer is not a template")
+	ErrTransferExchangeRateInvalid           = errors.New("exchange rate must be 1 for same currency accounts")
 )
 
 type Transfer struct {
-	ID                     string   `json:"id"`
-	SourceAccount          *Account `json:"source_account"`
-	DestinationAccount     *Account `json:"destination_account"`
-	ExchangeRateMultiplier float32  `json:"exchange_rate_multiplier"`
+	ID                 string   `json:"id"`
+	SourceAccount      *Account `json:"source_account"`
+	DestinationAccount *Account `json:"destination_account"`
+	// ExchangeRateMultiplier has 1 if same currency
+	ExchangeRateMultiplier float32 `json:"exchange_rate_multiplier"`
 	// Fees are calculated based on the amount and currency of the source account.
 	Fees                      float32                   `json:"fees"`
 	OutgoingTransaction       *Transaction              `json:"outgoing_transaction"`
@@ -58,6 +60,10 @@ func (t *Transfer) Validate() error {
 		return ErrTransferDestinationAccountNotActive
 	}
 
+	if t.SourceAccount.Currency.ID == t.DestinationAccount.Currency.ID && t.ExchangeRateMultiplier != 1 {
+		return ErrTransferExchangeRateInvalid
+	}
+
 	if t.ExchangeRateMultiplier <= 0 {
 		return ErrTransferRateMultiplierMustBePositive
 	}
@@ -78,6 +84,47 @@ func (t *Transfer) Validate() error {
 	}
 
 	return nil
+}
+
+func (t *Transfer) Clone() *Transfer {
+	now := time.Now()
+	return &Transfer{
+		ID:                        "",
+		SourceAccount:             t.SourceAccount,
+		DestinationAccount:        t.DestinationAccount,
+		ExchangeRateMultiplier:    t.ExchangeRateMultiplier,
+		Fees:                      t.Fees,
+		OutgoingTransaction:       t.OutgoingTransaction.Clone(),
+		IncomingTransaction:       t.IncomingTransaction.Clone(),
+		TransferType:              t.TransferType,
+		Tags:                      t.Tags,
+		RecurrenceTransactionInfo: t.RecurrenceTransactionInfo,
+		AuditData: AuditData{
+			Date:      &now,
+			CreatedBy: nil, // TODO: Take the actual user doing the rollback after auth implementation
+
+		},
+	}
+}
+
+func (t *Transfer) Rollback(rollbackMessage string) *Transfer {
+	now := time.Now()
+	return &Transfer{
+		ID:                        t.ID,
+		SourceAccount:             t.SourceAccount,
+		DestinationAccount:        t.DestinationAccount,
+		ExchangeRateMultiplier:    t.ExchangeRateMultiplier,
+		Fees:                      float32(0), // Fees handling is done on the use case
+		OutgoingTransaction:       t.OutgoingTransaction.Rollback(rollbackMessage),
+		IncomingTransaction:       t.IncomingTransaction.Rollback(rollbackMessage),
+		TransferType:              t.TransferType,
+		Tags:                      t.Tags,
+		RecurrenceTransactionInfo: t.RecurrenceTransactionInfo,
+		AuditData: AuditData{
+			Date:      &now,
+			CreatedBy: nil, // TODO: Take the actual user doing the rollback after auth implementation
+		},
+	}
 }
 
 type TransferList struct {

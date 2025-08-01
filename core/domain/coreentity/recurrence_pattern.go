@@ -36,9 +36,9 @@ type RecurrentTransactionTemplate struct {
 type Frequency string
 
 const (
-	NthDay           Frequency = "nth_day" // For these, interval will be the N value (every Nth days). Daily is 1.
-	Weekly           Frequency = "weekly"
-	Monthly          Frequency = "monthly"
+	NthDay           Frequency = "nth_day" // For these, interval will be the N value (every Nth days/weeks/months). Daily/weekly/monthly is 1.
+	NthWeek          Frequency = "nth_week"
+	NthMonth         Frequency = "nth_month"
 	Yearly           Frequency = "yearly"
 	NthDayOfTheMonth Frequency = "nth_day_of_the_month" // For these, interval will be the N value (e.g., 2nd day of the month)
 	NthDayOfTheYear  Frequency = "nth_day_of_the_year"
@@ -99,43 +99,12 @@ func (r *RecurrencePattern) Validate() error {
 		// For months with less than 31 days, days between 29 & 31 will default to the last day of the month
 		return ErrRecurrencyPatternInvalidIntervalValue
 	}
-	if r.Frequency == Weekly && r.IntervalValue > 7 {
+	if r.Frequency == NthWeek && r.IntervalValue > 52 {
 		return ErrRecurrencyPatternInvalidIntervalValue
 	}
-	if r.Frequency == NthDayOfTheYear && r.IntervalValue > 365 {
+	if r.Frequency == NthDayOfTheYear && r.IntervalValue > 366 {
 		return ErrRecurrencyPatternInvalidIntervalValue
 	}
 
 	return nil
-}
-
-func IsRecurrencyValidationError(err error) bool {
-	return errors.Is(
-		err,
-		ErrRecurrencyPatternInvalidFrequency,
-	) || errors.Is(
-		err,
-		ErrRecurrencyPatternAmountMustBePositive,
-	) || errors.Is(
-		err,
-		ErrRecurrencyPatternEndDateInPast,
-	) || errors.Is(
-		err,
-		ErrRecurrencyPatternDescriptionEmpty,
-	) || errors.Is(
-		err,
-		ErrRecurrencyPatternStartDateInPast,
-	) || errors.Is(
-		err,
-		ErrRecurrencyPatternStartDateEmpty,
-	) || errors.Is(
-		err,
-		ErrRecurrencyPatternEndEmpty,
-	) || errors.Is(
-		err,
-		ErrRecurrencyPatternEndBeforeStartDate,
-	) || errors.Is(
-		err,
-		ErrRecurrencyPatternInvalidIntervalValue,
-	)
 }

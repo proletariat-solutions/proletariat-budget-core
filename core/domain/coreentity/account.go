@@ -9,7 +9,7 @@ type Account struct {
 	ID                 *string          `json:"id"`
 	Name               string           `json:"name"`
 	Type               AccountType      `json:"type"`
-	Currency           Currency         `json:"currency"`
+	Currency           *Currency        `json:"currency"`
 	InitialBalance     float32          `json:"initial_balance"`
 	CurrentBalance     float32          `json:"current_balance"`
 	OverdraftLimit     float32          `json:"overdraft_limit"`
@@ -29,13 +29,14 @@ var (
 	ErrAccountNotFound                    = errors.New("account not found")
 	ErrAccountInactive                    = errors.New("account is inactive")
 	ErrInsufficientBalance                = errors.New("insufficient account balance")
-	ErrInvalidAccountType                 = errors.New("invalid account type")
 	ErrAccountHasTransactions             = errors.New("cannot delete account with existing transactions")
 	ErrAccountAlreadyActive               = errors.New("account is already active")
 	ErrAccountAlreadyInactive             = errors.New("account is already inactive")
-	ErrInvalidCurrency                    = errors.New("invalid currency")
 	ErrAccountHasActiveRecurrencePatterns = errors.New("account has active recurrence patterns")
 	ErrAccountHasActiveSavingsGoals       = errors.New("account has active savings goals")
+	ErrAccountCurrencyRequired            = errors.New("account currency is required")
+	ErrAccountOwnerRequired               = errors.New("account owner is required")
+	ErrAccountNameRequired                = errors.New("account name is required")
 )
 
 type AccountType string
@@ -48,9 +49,18 @@ const (
 	AccountTypeOther      AccountType = "other"
 )
 
-// String returns the string representation of the account type
-func (a AccountType) String() string {
-	return string(a)
+func (a *Account) Validate() error {
+	if a.Name == "" {
+		return ErrAccountNameRequired
+	}
+	if a.Currency == nil || a.Currency.ID == "" {
+		return ErrAccountCurrencyRequired
+	}
+	if a.Owner == nil || a.Owner.ID == "" {
+		return ErrAccountOwnerRequired
+	}
+
+	return nil
 }
 
 // DebitBalance debits the account balance (for expenditures and outgoing transfers)

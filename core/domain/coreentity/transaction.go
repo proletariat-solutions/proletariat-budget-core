@@ -27,6 +27,40 @@ type Transaction struct {
 	IsTemplate      bool               `json:"is_template"`
 }
 
+func (t *Transaction) Clone() *Transaction {
+	return &Transaction{
+		ID:              t.ID,
+		AccountID:       t.AccountID,
+		Amount:          t.Amount,
+		Currency:        t.Currency,
+		TransactionDate: t.TransactionDate,
+		Description:     t.Description,
+		TransactionType: t.TransactionType,
+		BalanceAfter:    t.BalanceAfter,
+		Status:          t.Status,
+		CreatedAt:       t.CreatedAt,
+		IsTemplate:      t.IsTemplate,
+	}
+}
+
+func (t *Transaction) Rollback(rollbackMessage string) *Transaction {
+	statusCompleted := TransactionStatusCompleted
+	balanceAfter := *t.BalanceAfter + t.Amount
+
+	return &Transaction{
+		ID:              t.ID,
+		AccountID:       t.AccountID,
+		Amount:          -t.Amount,
+		Currency:        t.Currency,
+		TransactionDate: time.Now(),
+		Description:     rollbackMessage,
+		TransactionType: TransactionTypeRollback,
+		BalanceAfter:    &balanceAfter,
+		Status:          &statusCompleted,
+		CreatedAt:       time.Now(),
+	}
+}
+
 func (t *Transaction) Validate() error {
 	if t.Amount <= 0 && t.TransactionType != TransactionTypeRollback {
 		return ErrTransactionAmountMustBePositive
@@ -102,4 +136,10 @@ func RollbackTransaction(
 		Status:          &statusCompleted,
 		CreatedAt:       time.Now(),
 	}
+}
+
+type Transactable[T any] interface {
+	Clone() *T
+	Rollback(rollbackMessage string) *T
+	Validate() error
 }

@@ -38,12 +38,12 @@ func (sc *ScheduleCalculator) CalculateNextExecution(
 			lastExecution,
 			pattern.IntervalValue,
 		)
-	case coreentity.Weekly:
+	case coreentity.NthWeek:
 		return sc.calculateWeeklyNext(
 			lastExecution,
 			pattern.IntervalValue,
 		)
-	case coreentity.Monthly:
+	case coreentity.NthMonth:
 		return sc.calculateMonthlyNext(
 			lastExecution,
 			pattern.IntervalValue,

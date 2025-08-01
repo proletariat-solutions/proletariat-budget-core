@@ -6,7 +6,7 @@ import "context"
 //
 //go:generate mockgen -source=transaction_manager.go -destination=../../test/mocks/mock_transaction_manager.go -package mocks
 type TransactionManager interface {
-	// WithTransaction executes the given function within a database transaction
+	// WithDatabaseTransaction executes the given function within a database transaction
 	// If the function returns an error, the transaction is rolled back
 	// Otherwise, the transaction is committed
 	WithDatabaseTransaction(

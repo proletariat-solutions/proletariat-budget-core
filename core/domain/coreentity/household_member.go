@@ -11,6 +11,9 @@ var (
 	ErrMemberNotFound          = errors.New("member not found")
 	ErrMemberAlreadyInactive   = errors.New("member is already inactive")
 	ErrMemberInactive          = errors.New("member is inactive")
+	ErrMemberFirstNameRequired = errors.New("member first name is required")
+	ErrMemberLastNameRequired  = errors.New("member last name is required")
+	ErrMemberRoleRequired      = errors.New("member role is required")
 )
 
 // HouseholdMember represents a household member in the domain
@@ -25,35 +28,21 @@ type HouseholdMember struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// IsActive returns true if the household member is active
-func (hm *HouseholdMember) IsActive() bool {
-	return hm.Active
-}
-
-// FullName returns the full name of the household member
-func (hm *HouseholdMember) FullName() string {
-	return hm.FirstName + " " + hm.LastName
-}
-
-// DisplayName returns the display name (nickname if available, otherwise full name)
-func (hm *HouseholdMember) DisplayName() string {
-	if hm.Nickname != nil && *hm.Nickname != "" {
-		return *hm.Nickname
+// Validate checks if the household member is valid
+func (hm *HouseholdMember) Validate() error {
+	if hm.FirstName == "" {
+		return ErrMemberFirstNameRequired
 	}
 
-	return hm.FullName()
-}
+	if hm.LastName == "" {
+		return ErrMemberLastNameRequired
+	}
 
-// Deactivate marks the household member as inactive
-func (hm *HouseholdMember) Deactivate() {
-	hm.Active = false
-	hm.UpdatedAt = time.Now()
-}
+	if hm.Role == "" {
+		return ErrMemberRoleRequired
+	}
 
-// Activate marks the household member as active
-func (hm *HouseholdMember) Activate() {
-	hm.Active = true
-	hm.UpdatedAt = time.Now()
+	return nil
 }
 
 // HouseholdMemberList represents a paginated list of household members

@@ -3,8 +3,8 @@ package usecase
 import (
 	"context"
 	"errors"
-	"github.com/rs/zerolog/log"
 
+	"github.com/rs/zerolog/log"
 	"proletariat-budget-core/core/domain/coreentity"
 	"proletariat-budget-core/core/port"
 )
@@ -136,6 +136,7 @@ func (i *Ingress) Create(
 					return errLink
 				}
 			}
+
 			return nil
 		},
 	)
@@ -262,5 +263,6 @@ func (i *Ingress) linkTags(
 		expID,
 		tags,
 	)
+
 	return err
 }

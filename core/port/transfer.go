@@ -28,12 +28,4 @@ type Transfer interface {
 		*coreentity.TransferList,
 		error,
 	)
-	UpdateTemplate(
-		ctx context.Context,
-		template coreentity.Transfer,
-	) error
-	DeleteTemplate(
-		ctx context.Context,
-		template coreentity.Transfer,
-	) error
 }

@@ -16,22 +16,6 @@ type Ingress struct {
 	AuditData
 }
 
-type IngressList struct {
-	Ingresses []Ingress         `json:"ingresses"`
-	Metadata  misc.ListMetadata `json:"metadata"`
-}
-
-type IngressListParams struct {
-	CategoryID  *string    `form:"category,omitempty" json:"category,omitempty"`
-	Source      *string    `form:"source,omitempty" json:"source,omitempty"`
-	TagIDs      *[]string  `form:"tags,omitempty" json:"tags,omitempty"`
-	StartDate   *time.Time `form:"startDate,omitempty" json:"startDate,omitempty"`
-	EndDate     *time.Time `form:"endDate,omitempty" json:"endDate,omitempty"`
-	IsRecurring *bool      `form:"isRecurring,omitempty" json:"isRecurring,omitempty"`
-	Currency    *string    `form:"currency,omitempty" json:"currency,omitempty"`
-	misc.ListParams
-}
-
 // Ingress domain errors
 var (
 	ErrIngressNotFound             = errors.New("ingress not found")
@@ -54,4 +38,54 @@ func (i *Ingress) Validate() error {
 	}
 
 	return i.Transaction.Validate()
+}
+
+func (i *Ingress) Clone() *Ingress {
+	txClone := i.Transaction.Clone()
+	return &Ingress{
+		ID:          "",
+		Category:    i.Category,
+		Transaction: txClone,
+		Tags:        i.Tags,
+		RecurrenceTransactionInfo: &RecurrentTransactionInfo{
+			FromRecurrencePatternID: i.RecurrenceTransactionInfo.FromRecurrencePatternID,
+			IsTemplate:              false,
+		},
+		AuditData: i.AuditData,
+	}
+}
+
+func (i *Ingress) Rollback(rollbackMessage string) *Ingress {
+	txRollback := i.Transaction.Rollback(rollbackMessage)
+	now := time.Now()
+	return &Ingress{
+		ID:          i.ID,
+		Category:    i.Category,
+		Transaction: txRollback,
+		Tags:        i.Tags,
+		RecurrenceTransactionInfo: &RecurrentTransactionInfo{
+			FromRecurrencePatternID: i.RecurrenceTransactionInfo.FromRecurrencePatternID,
+			IsTemplate:              false,
+		},
+		AuditData: AuditData{
+			Date:      &now,
+			CreatedBy: i.AuditData.CreatedBy, // TODO: Take the actual user doing the rollback after auth implementation
+		},
+	}
+}
+
+type IngressList struct {
+	Ingresses []Ingress         `json:"ingresses"`
+	Metadata  misc.ListMetadata `json:"metadata"`
+}
+
+type IngressListParams struct {
+	CategoryID  *string    `form:"category,omitempty" json:"category,omitempty"`
+	Source      *string    `form:"source,omitempty" json:"source,omitempty"`
+	TagIDs      *[]string  `form:"tags,omitempty" json:"tags,omitempty"`
+	StartDate   *time.Time `form:"startDate,omitempty" json:"startDate,omitempty"`
+	EndDate     *time.Time `form:"endDate,omitempty" json:"endDate,omitempty"`
+	IsRecurring *bool      `form:"isRecurring,omitempty" json:"isRecurring,omitempty"`
+	Currency    *string    `form:"currency,omitempty" json:"currency,omitempty"`
+	misc.ListParams
 }

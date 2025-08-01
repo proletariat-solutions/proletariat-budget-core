@@ -14,6 +14,9 @@ var (
 	ErrCategoryUsedInSavingGoal      = errors.New("category is used in saving goals")
 	ErrCategoryUsedInIngress         = errors.New("category is used in ingresses")
 	ErrCategoryUsedInEntity          = errors.New("category is used in entity")
+	ErrCategoryNameEmpty             = errors.New("category name is required")
+	ErrCategoryBackgroundColorEmpty  = errors.New("category background color is required")
+	ErrCategoryColorEmpty            = errors.New("category color is required")
 )
 
 type Category struct {
@@ -34,6 +37,20 @@ const (
 	CategoryTypeTransfer    CategoryType = "transfer"
 	CategoryTypeSavingGoal  CategoryType = "saving_goal"
 )
+
+func (c *Category) Validate() error {
+	if c.Name == "" {
+		return ErrCategoryNameEmpty
+	}
+	if c.Color == "" {
+		return ErrCategoryColorEmpty
+	}
+	if c.BackgroundColor == "" {
+		return ErrCategoryBackgroundColorEmpty
+	}
+
+	return nil
+}
 
 func (c *Category) Activate() error {
 	if c.Active {
