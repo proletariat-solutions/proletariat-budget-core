@@ -41,6 +41,20 @@ func (m *MockAccount) EXPECT() *MockAccountMockRecorder {
 	return m.recorder
 }
 
+// Activate mocks base method.
+func (m *MockAccount) Activate(ctx context.Context, id string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Activate", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Activate indicates an expected call of Activate.
+func (mr *MockAccountMockRecorder) Activate(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Activate", reflect.TypeOf((*MockAccount)(nil).Activate), ctx, id)
+}
+
 // Create mocks base method.
 func (m *MockAccount) Create(ctx context.Context, account coreentity.Account) (*string, error) {
 	m.ctrl.T.Helper()
@@ -54,6 +68,20 @@ func (m *MockAccount) Create(ctx context.Context, account coreentity.Account) (*
 func (mr *MockAccountMockRecorder) Create(ctx, account any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockAccount)(nil).Create), ctx, account)
+}
+
+// Deactivate mocks base method.
+func (m *MockAccount) Deactivate(ctx context.Context, id string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Deactivate", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Deactivate indicates an expected call of Deactivate.
+func (mr *MockAccountMockRecorder) Deactivate(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Deactivate", reflect.TypeOf((*MockAccount)(nil).Deactivate), ctx, id)
 }
 
 // Delete mocks base method.

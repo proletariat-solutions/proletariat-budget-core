@@ -94,62 +94,33 @@ func (a *Account) Update(
 	*coreentity.Account,
 	error,
 ) {
-	validationErr := account.Validate()
-	if validationErr != nil {
-		return nil, validationErr
-	}
-	err := a.accountRepo.Update(
-		ctx,
-		account,
-	)
-	if err != nil {
+	if err := account.Validate(); err != nil {
 		return nil, err
 	}
-	updatedAccount, errGet := a.accountRepo.GetByID(
-		ctx,
-		*account.ID,
-	)
-	if errGet != nil {
-		if errors.Is(
-			errGet,
-			port.ErrRecordNotFound,
-		) {
+
+	err := a.accountRepo.Update(ctx, account)
+	if err != nil {
+		if errors.Is(err, port.ErrRecordNotFound) {
 			return nil, coreentity.ErrAccountNotFound
 		}
 
-		return nil, errGet
+		return nil, err
 	}
 
-	return updatedAccount, nil
+	return &account, nil
 }
 
 func (a *Account) Deactivate(
 	ctx context.Context,
 	id string,
 ) error {
-	account, err := a.accountRepo.GetByID(
-		ctx,
-		id,
-	)
+	err := a.accountRepo.Deactivate(ctx, id)
 	if err != nil {
-		if errors.Is(
-			err,
-			port.ErrRecordNotFound,
-		) {
+		if errors.Is(err, port.ErrRecordNotFound) {
 			return coreentity.ErrAccountNotFound
 		}
 
 		return err
-	}
-	if errInactive := account.SetInactive(); errInactive != nil {
-		return errInactive
-	}
-	errUpdate := a.accountRepo.Update(
-		ctx,
-		*account,
-	)
-	if errUpdate != nil {
-		return errUpdate
 	}
 
 	return nil
@@ -159,29 +130,13 @@ func (a *Account) Activate(
 	ctx context.Context,
 	id string,
 ) error {
-	account, err := a.accountRepo.GetByID(
-		ctx,
-		id,
-	)
+	err := a.accountRepo.Activate(ctx, id)
 	if err != nil {
-		if errors.Is(
-			err,
-			port.ErrRecordNotFound,
-		) {
+		if errors.Is(err, port.ErrRecordNotFound) {
 			return coreentity.ErrAccountNotFound
 		}
 
 		return err
-	}
-	if errActive := account.SetActive(); errActive != nil {
-		return errActive
-	}
-	errUpdate := a.accountRepo.Update(
-		ctx,
-		*account,
-	)
-	if errUpdate != nil {
-		return errUpdate
 	}
 
 	return nil

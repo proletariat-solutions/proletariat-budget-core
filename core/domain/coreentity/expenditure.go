@@ -27,6 +27,7 @@ var (
 func (e *Expenditure) Clone() *Expenditure {
 	txClone := e.Transaction.Clone()
 	now := time.Now()
+
 	return &Expenditure{
 		ID:          "",
 		Category:    e.Category,
@@ -40,7 +41,7 @@ func (e *Expenditure) Clone() *Expenditure {
 		},
 		AuditData: AuditData{
 			Date:      &now,
-			CreatedBy: e.AuditData.CreatedBy, // TODO: Take the actual user doing the rollback after auth implementation
+			CreatedBy: e.CreatedBy, // TODO: Take the actual user doing the rollback after auth implementation
 		},
 	}
 }
@@ -48,6 +49,7 @@ func (e *Expenditure) Clone() *Expenditure {
 func (e *Expenditure) Rollback(rollbackMessage string) *Expenditure {
 	txRollback := e.Transaction.Rollback(rollbackMessage)
 	now := time.Now()
+
 	return &Expenditure{
 		ID:                        e.ID,
 		Category:                  e.Category,
@@ -58,7 +60,7 @@ func (e *Expenditure) Rollback(rollbackMessage string) *Expenditure {
 		RecurrenceTransactionInfo: e.RecurrenceTransactionInfo,
 		AuditData: AuditData{
 			Date:      &now,
-			CreatedBy: e.AuditData.CreatedBy, // TODO: Take the actual user doing the rollback after auth implementation
+			CreatedBy: e.CreatedBy, // TODO: Take the actual user doing the rollback after auth implementation
 		},
 	}
 }

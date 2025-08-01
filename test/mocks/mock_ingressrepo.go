@@ -56,20 +56,6 @@ func (mr *MockIngressMockRecorder) Create(ctx, ingress any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockIngress)(nil).Create), ctx, ingress)
 }
 
-// DeleteTemplate mocks base method.
-func (m *MockIngress) DeleteTemplate(ctx context.Context, template coreentity.Ingress) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteTemplate", ctx, template)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DeleteTemplate indicates an expected call of DeleteTemplate.
-func (mr *MockIngressMockRecorder) DeleteTemplate(ctx, template any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTemplate", reflect.TypeOf((*MockIngress)(nil).DeleteTemplate), ctx, template)
-}
-
 // GetByID mocks base method.
 func (m *MockIngress) GetByID(ctx context.Context, id string) (coreentity.Ingress, error) {
 	m.ctrl.T.Helper()
@@ -98,18 +84,4 @@ func (m *MockIngress) List(ctx context.Context, params coreentity.IngressListPar
 func (mr *MockIngressMockRecorder) List(ctx, params any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockIngress)(nil).List), ctx, params)
-}
-
-// UpdateTemplate mocks base method.
-func (m *MockIngress) UpdateTemplate(ctx context.Context, template coreentity.Ingress) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateTemplate", ctx, template)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// UpdateTemplate indicates an expected call of UpdateTemplate.
-func (mr *MockIngressMockRecorder) UpdateTemplate(ctx, template any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTemplate", reflect.TypeOf((*MockIngress)(nil).UpdateTemplate), ctx, template)
 }

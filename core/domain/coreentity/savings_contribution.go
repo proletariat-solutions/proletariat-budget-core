@@ -7,16 +7,16 @@ type SavingsContribution struct {
 }
 
 func (s SavingsContribution) Clone() *SavingsContribution {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (s SavingsContribution) Rollback(rollbackMessage string) *SavingsContribution {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (s SavingsContribution) Validate() error {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }

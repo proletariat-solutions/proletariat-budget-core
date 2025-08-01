@@ -21,16 +21,16 @@ var (
 )
 
 func (s SavingOperation) Clone() *SavingOperation {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (s SavingOperation) Rollback(rollbackMessage string) *SavingOperation {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (s SavingOperation) Validate() error {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }

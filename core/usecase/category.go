@@ -99,25 +99,21 @@ func (uc *Category) UpdateCategory(
 	*coreentity.Category,
 	error,
 ) {
-	_, err := uc.GetCategory(
-		ctx,
-		category.ID,
-	)
-	if err != nil {
-		return nil, err
-	}
-	err = uc.categoryRepo.Update(
-		ctx,
-		category,
-	)
-	if err != nil {
+	if err := category.Validate(); err != nil {
 		return nil, err
 	}
 
-	return uc.GetCategory(
-		ctx,
-		category.ID,
-	)
+	err := uc.categoryRepo.Update(ctx, category)
+	if err != nil {
+		if errors.Is(err, port.ErrRecordNotFound) {
+			return nil, coreentity.ErrCategoryNotFound
+		}
+
+		return nil, err
+	}
+
+	// Single call to get updated entity
+	return uc.GetCategory(ctx, category.ID)
 }
 
 func (uc *Category) DeleteCategory(
@@ -142,52 +138,28 @@ func (uc *Category) DeleteCategory(
 	return nil
 }
 
-func (uc *Category) Activate(
-	ctx context.Context,
-	id string,
-) error {
-	category, err := uc.categoryRepo.GetByID(
-		ctx,
-		id,
-	)
+func (uc *Category) Activate(ctx context.Context, id string) error {
+	// Single repository call for activation
+	err := uc.categoryRepo.Activate(ctx, id)
 	if err != nil {
-		return err
-	}
-	err = category.Activate()
-	if err != nil {
-		return err
-	}
-	err = uc.categoryRepo.Update(
-		ctx,
-		*category,
-	)
-	if err != nil {
+		if errors.Is(err, port.ErrRecordNotFound) {
+			return coreentity.ErrCategoryNotFound
+		}
+
 		return err
 	}
 
 	return nil
 }
 
-func (uc *Category) Deactivate(
-	ctx context.Context,
-	id string,
-) error {
-	category, err := uc.categoryRepo.GetByID(
-		ctx,
-		id,
-	)
+func (uc *Category) Deactivate(ctx context.Context, id string) error {
+	// Single repository call for deactivation
+	err := uc.categoryRepo.Deactivate(ctx, id)
 	if err != nil {
-		return err
-	}
-	err = category.Deactivate()
-	if err != nil {
-		return err
-	}
-	err = uc.categoryRepo.Update(
-		ctx,
-		*category,
-	)
-	if err != nil {
+		if errors.Is(err, port.ErrRecordNotFound) {
+			return coreentity.ErrCategoryNotFound
+		}
+
 		return err
 	}
 

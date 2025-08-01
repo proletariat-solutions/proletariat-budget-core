@@ -100,48 +100,6 @@ func (mr *MockSavingsGoalMockRecorder) Delete(ctx, id any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockSavingsGoal)(nil).Delete), ctx, id)
 }
 
-// DeleteContribution mocks base method.
-func (m *MockSavingsGoal) DeleteContribution(ctx context.Context, id string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteContribution", ctx, id)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DeleteContribution indicates an expected call of DeleteContribution.
-func (mr *MockSavingsGoalMockRecorder) DeleteContribution(ctx, id any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteContribution", reflect.TypeOf((*MockSavingsGoal)(nil).DeleteContribution), ctx, id)
-}
-
-// DeleteTemplate mocks base method.
-func (m *MockSavingsGoal) DeleteTemplate(ctx context.Context, template coreentity.SavingsContribution) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteTemplate", ctx, template)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DeleteTemplate indicates an expected call of DeleteTemplate.
-func (mr *MockSavingsGoalMockRecorder) DeleteTemplate(ctx, template any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTemplate", reflect.TypeOf((*MockSavingsGoal)(nil).DeleteTemplate), ctx, template)
-}
-
-// DeleteWithdrawal mocks base method.
-func (m *MockSavingsGoal) DeleteWithdrawal(ctx context.Context, id string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteWithdrawal", ctx, id)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DeleteWithdrawal indicates an expected call of DeleteWithdrawal.
-func (mr *MockSavingsGoalMockRecorder) DeleteWithdrawal(ctx, id any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteWithdrawal", reflect.TypeOf((*MockSavingsGoal)(nil).DeleteWithdrawal), ctx, id)
-}
-
 // GetByID mocks base method.
 func (m *MockSavingsGoal) GetByID(ctx context.Context, id string) (*coreentity.SavingsGoal, error) {
 	m.ctrl.T.Helper()
@@ -203,18 +161,18 @@ func (mr *MockSavingsGoalMockRecorder) IsActive(ctx, id any) *gomock.Call {
 }
 
 // List mocks base method.
-func (m *MockSavingsGoal) List(ctx context.Context) ([]coreentity.SavingsGoal, error) {
+func (m *MockSavingsGoal) List(ctx context.Context, params coreentity.ListSavingsGoalsParams) (coreentity.SavingsGoalsList, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "List", ctx)
-	ret0, _ := ret[0].([]coreentity.SavingsGoal)
+	ret := m.ctrl.Call(m, "List", ctx, params)
+	ret0, _ := ret[0].(coreentity.SavingsGoalsList)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // List indicates an expected call of List.
-func (mr *MockSavingsGoalMockRecorder) List(ctx any) *gomock.Call {
+func (mr *MockSavingsGoalMockRecorder) List(ctx, params any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockSavingsGoal)(nil).List), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockSavingsGoal)(nil).List), ctx, params)
 }
 
 // ListSavingsTransactions mocks base method.
@@ -272,18 +230,4 @@ func (m *MockSavingsGoal) Update(ctx context.Context, savingsGoal coreentity.Sav
 func (mr *MockSavingsGoalMockRecorder) Update(ctx, savingsGoal any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockSavingsGoal)(nil).Update), ctx, savingsGoal)
-}
-
-// UpdateTemplate mocks base method.
-func (m *MockSavingsGoal) UpdateTemplate(ctx context.Context, template coreentity.SavingsContribution) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateTemplate", ctx, template)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// UpdateTemplate indicates an expected call of UpdateTemplate.
-func (mr *MockSavingsGoalMockRecorder) UpdateTemplate(ctx, template any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTemplate", reflect.TypeOf((*MockSavingsGoal)(nil).UpdateTemplate), ctx, template)
 }

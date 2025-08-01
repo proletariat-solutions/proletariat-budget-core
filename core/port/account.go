@@ -44,4 +44,13 @@ type Account interface {
 		bool,
 		error,
 	)
+	Activate(
+		ctx context.Context,
+		id string,
+	) error
+
+	Deactivate(
+		ctx context.Context,
+		id string,
+	) error
 }

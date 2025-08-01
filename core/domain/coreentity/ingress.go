@@ -42,6 +42,7 @@ func (i *Ingress) Validate() error {
 
 func (i *Ingress) Clone() *Ingress {
 	txClone := i.Transaction.Clone()
+
 	return &Ingress{
 		ID:          "",
 		Category:    i.Category,
@@ -58,6 +59,7 @@ func (i *Ingress) Clone() *Ingress {
 func (i *Ingress) Rollback(rollbackMessage string) *Ingress {
 	txRollback := i.Transaction.Rollback(rollbackMessage)
 	now := time.Now()
+
 	return &Ingress{
 		ID:          i.ID,
 		Category:    i.Category,
@@ -69,7 +71,7 @@ func (i *Ingress) Rollback(rollbackMessage string) *Ingress {
 		},
 		AuditData: AuditData{
 			Date:      &now,
-			CreatedBy: i.AuditData.CreatedBy, // TODO: Take the actual user doing the rollback after auth implementation
+			CreatedBy: i.CreatedBy, // TODO: Take the actual user doing the rollback after auth implementation
 		},
 	}
 }

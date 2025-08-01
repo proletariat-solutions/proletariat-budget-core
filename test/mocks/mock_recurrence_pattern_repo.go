@@ -70,6 +70,20 @@ func (mr *MockRecurrencePatternMockRecorder) Delete(ctx, id any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockRecurrencePattern)(nil).Delete), ctx, id)
 }
 
+// DeleteTemplate mocks base method.
+func (m *MockRecurrencePattern) DeleteTemplate(ctx context.Context, template coreentity.RecurrentTransactionTemplate) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteTemplate", ctx, template)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteTemplate indicates an expected call of DeleteTemplate.
+func (mr *MockRecurrencePatternMockRecorder) DeleteTemplate(ctx, template any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTemplate", reflect.TypeOf((*MockRecurrencePattern)(nil).DeleteTemplate), ctx, template)
+}
+
 // GetByID mocks base method.
 func (m *MockRecurrencePattern) GetByID(ctx context.Context, id string) (*coreentity.RecurrencePattern, error) {
 	m.ctrl.T.Helper()
@@ -157,4 +171,18 @@ func (m *MockRecurrencePattern) Update(ctx context.Context, recurrencePattern co
 func (mr *MockRecurrencePatternMockRecorder) Update(ctx, recurrencePattern any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRecurrencePattern)(nil).Update), ctx, recurrencePattern)
+}
+
+// UpdateTemplate mocks base method.
+func (m *MockRecurrencePattern) UpdateTemplate(ctx context.Context, template coreentity.RecurrentTransactionTemplate) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateTemplate", ctx, template)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateTemplate indicates an expected call of UpdateTemplate.
+func (mr *MockRecurrencePatternMockRecorder) UpdateTemplate(ctx, template any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTemplate", reflect.TypeOf((*MockRecurrencePattern)(nil).UpdateTemplate), ctx, template)
 }

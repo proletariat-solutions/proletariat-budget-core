@@ -51,6 +51,7 @@ func (sg *SavingsGoal) Update(
 	if err != nil {
 		return err
 	}
+
 	return sg.savingsGoalRepo.Update(
 		ctx,
 		savingsGoal,
@@ -72,8 +73,10 @@ func (sg *SavingsGoal) Delete(
 		) {
 			return coreentity.ErrSavingsGoalNotFound
 		}
+
 		return err
 	}
+
 	return nil
 }
 
@@ -95,8 +98,10 @@ func (sg *SavingsGoal) GetByID(
 		) {
 			return nil, coreentity.ErrSavingsGoalNotFound
 		}
+
 		return nil, err
 	}
+
 	return savingsGoal, nil
 }
 
@@ -114,6 +119,7 @@ func (sg *SavingsGoal) List(
 	if err != nil {
 		return nil, err
 	}
+
 	return &savingsGoals, nil
 }
 
@@ -135,8 +141,10 @@ func (sg *SavingsGoal) IsActive(
 		) {
 			return false, coreentity.ErrSavingsGoalNotFound
 		}
+
 		return false, err
 	}
+
 	return isActive, nil
 }
 
@@ -155,8 +163,10 @@ func (sg *SavingsGoal) MarkAsAbandoned(
 		) {
 			return coreentity.ErrSavingsGoalNotFound
 		}
+
 		return err
 	}
+
 	return nil
 }
 
@@ -175,7 +185,9 @@ func (sg *SavingsGoal) MarkAsCompleted(
 		) {
 			return coreentity.ErrSavingsGoalNotFound
 		}
+
 		return err
 	}
+
 	return nil
 }

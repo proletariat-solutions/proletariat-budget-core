@@ -88,6 +88,7 @@ func (t *Transfer) Validate() error {
 
 func (t *Transfer) Clone() *Transfer {
 	now := time.Now()
+
 	return &Transfer{
 		ID:                        "",
 		SourceAccount:             t.SourceAccount,
@@ -109,6 +110,7 @@ func (t *Transfer) Clone() *Transfer {
 
 func (t *Transfer) Rollback(rollbackMessage string) *Transfer {
 	now := time.Now()
+
 	return &Transfer{
 		ID:                        t.ID,
 		SourceAccount:             t.SourceAccount,

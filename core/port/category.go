@@ -48,4 +48,13 @@ type Category interface {
 		[]coreentity.Category,
 		error,
 	)
+	Activate(
+		ctx context.Context,
+		id string,
+	) error
+
+	Deactivate(
+		ctx context.Context,
+		id string,
+	) error
 }

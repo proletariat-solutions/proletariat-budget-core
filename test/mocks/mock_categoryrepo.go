@@ -41,6 +41,20 @@ func (m *MockCategory) EXPECT() *MockCategoryMockRecorder {
 	return m.recorder
 }
 
+// Activate mocks base method.
+func (m *MockCategory) Activate(ctx context.Context, id string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Activate", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Activate indicates an expected call of Activate.
+func (mr *MockCategoryMockRecorder) Activate(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Activate", reflect.TypeOf((*MockCategory)(nil).Activate), ctx, id)
+}
+
 // Create mocks base method.
 func (m *MockCategory) Create(ctx context.Context, category coreentity.Category) (string, error) {
 	m.ctrl.T.Helper()
@@ -54,6 +68,20 @@ func (m *MockCategory) Create(ctx context.Context, category coreentity.Category)
 func (mr *MockCategoryMockRecorder) Create(ctx, category any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockCategory)(nil).Create), ctx, category)
+}
+
+// Deactivate mocks base method.
+func (m *MockCategory) Deactivate(ctx context.Context, id string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Deactivate", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Deactivate indicates an expected call of Deactivate.
+func (mr *MockCategoryMockRecorder) Deactivate(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Deactivate", reflect.TypeOf((*MockCategory)(nil).Deactivate), ctx, id)
 }
 
 // Delete mocks base method.
