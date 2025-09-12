@@ -240,11 +240,10 @@ func (u *Expenditure) processTransaction(
 	accountRepo port.Account,
 	transactionRepo port.Transaction,
 ) error {
-	if !account.HasSufficientBalance(expenditure.Transaction.Amount) {
-		return coreentity.ErrInsufficientBalance
+	if errDebit := account.DebitBalance(expenditure.Transaction.Amount); errDebit != nil {
+		return errDebit
 	}
 
-	account.DebitBalance(expenditure.Transaction.Amount)
 	expenditure.Transaction.BalanceAfter = &account.CurrentBalance
 	statusCompleted := coreentity.TransactionStatusCompleted
 	expenditure.Transaction.Status = &statusCompleted

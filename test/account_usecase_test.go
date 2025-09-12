@@ -847,21 +847,6 @@ func TestAccountUseCase_Update_Success(t *testing.T) {
 	)
 
 	accountID := "account-123"
-	account := coreentity.Account{
-		ID:   &accountID,
-		Name: "Updated Account",
-		Currency: &coreentity.Currency{
-			ID:     "currency-456",
-			Name:   "United States Dollar",
-			Symbol: "$",
-		},
-		Owner: &coreentity.HouseholdMember{
-			ID:        "member-456",
-			FirstName: "John",
-			LastName:  "Doe",
-			Active:    true,
-		},
-	}
 
 	updatedAccount := &coreentity.Account{
 		ID:             &accountID,
@@ -883,23 +868,15 @@ func TestAccountUseCase_Update_Success(t *testing.T) {
 
 	accountRepo.EXPECT().Update(
 		ctx,
-		account,
+		*updatedAccount,
 	).Return(
-		nil,
-	)
-
-	accountRepo.EXPECT().GetByID(
-		ctx,
-		accountID,
-	).Return(
-		updatedAccount,
 		nil,
 	)
 
 	// Act
 	result, err := useCase.Update(
 		ctx,
-		account,
+		*updatedAccount,
 	)
 
 	// Assert
@@ -913,8 +890,8 @@ func TestAccountUseCase_Update_Success(t *testing.T) {
 	)
 	assert.Equal(
 		t,
-		updatedAccount,
-		result,
+		*updatedAccount,
+		*result,
 	)
 }
 func TestAccountUseCase_Update_GetByIDFailsWithErrRecordNotFoundAfterSuccessfulUpdate(t *testing.T) {
@@ -949,14 +926,6 @@ func TestAccountUseCase_Update_GetByIDFailsWithErrRecordNotFoundAfterSuccessfulU
 		ctx,
 		account,
 	).Return(
-		nil,
-	)
-
-	accountRepo.EXPECT().GetByID(
-		ctx,
-		accountID,
-	).Return(
-		nil,
 		port.ErrRecordNotFound,
 	)
 
@@ -1012,14 +981,6 @@ func TestAccountUseCase_Update_GetByIDFailsWithUnexpectedErrorAfterSuccessfulUpd
 		ctx,
 		account,
 	).Return(
-		nil,
-	)
-
-	accountRepo.EXPECT().GetByID(
-		ctx,
-		accountID,
-	).Return(
-		nil,
 		unexpectedError,
 	)
 
@@ -1107,35 +1068,12 @@ func TestAccountUseCase_Deactivate_Success(t *testing.T) {
 	)
 
 	accountID := "account-123"
-	activeAccount := &coreentity.Account{
-		ID:     &accountID,
-		Name:   "Test Account",
-		Active: true,
-	}
 
-	accountRepo.EXPECT().GetByID(
+	accountRepo.EXPECT().Deactivate(
 		ctx,
 		accountID,
 	).Return(
-		activeAccount,
 		nil,
-	)
-
-	accountRepo.EXPECT().Update(
-		ctx,
-		gomock.Any(),
-	).DoAndReturn(
-		func(
-			ctx context.Context,
-			acc coreentity.Account,
-		) error {
-			// Verify that the account is set to inactive
-			assert.False(
-				t,
-				acc.Active,
-			)
-			return nil
-		},
 	)
 
 	// Act
@@ -1163,11 +1101,10 @@ func TestAccountUseCase_Deactivate_ReturnsErrAccountNotFound(t *testing.T) {
 
 	accountID := "account-123"
 
-	accountRepo.EXPECT().GetByID(
+	accountRepo.EXPECT().Deactivate(
 		ctx,
 		accountID,
 	).Return(
-		nil,
 		port.ErrRecordNotFound,
 	)
 
@@ -1198,11 +1135,10 @@ func TestAccountUseCase_Deactivate_ReturnsUnexpectedError(t *testing.T) {
 	accountID := "account-123"
 	unexpectedError := errors.New("database connection error")
 
-	accountRepo.EXPECT().GetByID(
+	accountRepo.EXPECT().Deactivate(
 		ctx,
 		accountID,
 	).Return(
-		nil,
 		unexpectedError,
 	)
 
@@ -1231,20 +1167,12 @@ func TestAccountUseCase_Deactivate_ReturnsErrorFromSetInactive(t *testing.T) {
 	)
 
 	accountID := "account-123"
-	account := &coreentity.Account{
-		ID:     &accountID,
-		Name:   "Test Account",
-		Active: false, // Already inactive to trigger SetInactive error
-	}
 
-	setInactiveError := errors.New("account is already inactive")
-
-	accountRepo.EXPECT().GetByID(
+	accountRepo.EXPECT().Deactivate(
 		ctx,
 		accountID,
 	).Return(
-		account,
-		nil,
+		coreentity.ErrAccountAlreadyInactive,
 	)
 
 	// Act
@@ -1256,7 +1184,7 @@ func TestAccountUseCase_Deactivate_ReturnsErrorFromSetInactive(t *testing.T) {
 	// Assert
 	assert.Equal(
 		t,
-		setInactiveError,
+		coreentity.ErrAccountAlreadyInactive,
 		err,
 	)
 }

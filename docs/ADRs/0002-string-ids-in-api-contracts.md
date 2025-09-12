@@ -16,7 +16,6 @@ Key considerations included:
 - Our default database (MySQL) uses numeric `BIGINT` IDs
 - Different databases might use different ID formats (numeric, UUID, etc.)
 - Frontend applications need to handle these IDs consistently
-- JSON doesn't have a specific type for 64-bit integers, which can lead to precision issues
 
 ## Decision
 

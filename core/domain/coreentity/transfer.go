@@ -129,6 +129,41 @@ func (t *Transfer) Rollback(rollbackMessage string) *Transfer {
 	}
 }
 
+func (t *Transfer) DoTransfer() error {
+	incomingAmount := t.ExchangeRateMultiplier * (t.OutgoingTransaction.Amount - t.Fees)
+	if errDebit := t.SourceAccount.DebitBalance(t.OutgoingTransaction.Amount); errDebit != nil {
+		return errDebit
+	}
+
+	t.DestinationAccount.CreditBalance(incomingAmount)
+	return nil
+}
+
+func (t *Transfer) SetTransferType(savingOperation bool) {
+	if savingOperation {
+		t.TransferType = TransferTypeSavingOperation
+
+		return
+	}
+	sameType := t.SourceAccount.Type == t.DestinationAccount.Type
+	sameCurrency := t.SourceAccount.Currency.ID == t.DestinationAccount.Currency.ID
+	if sameType && sameCurrency {
+		t.TransferType = TransferTypeTransfer
+	}
+	if !sameCurrency {
+		t.TransferType = TransferTypeCurrencyConversion
+	}
+	if sameCurrency && t.DestinationAccount.Type == AccountTypeCash {
+		t.TransferType = TransferTypeWithdrawal
+	}
+	if sameCurrency && t.SourceAccount.Type == AccountTypeCash {
+		t.TransferType = TransferTypeDeposit
+	}
+	if sameCurrency && t.SourceAccount.Type == AccountTypeCash && t.DestinationAccount.Type == AccountTypeCash {
+		t.TransferType = TransferTypeTransfer
+	}
+}
+
 type TransferList struct {
 	Transfers []*Transfer       `json:"transfers"`
 	Metadata  misc.ListMetadata `json:"metadata"`

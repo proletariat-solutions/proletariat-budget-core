@@ -31,7 +31,7 @@ We have decided to use the following technology stack for our supported client &
 
 1. **Backend**: Go (Golang)
 2. **Database**: MySQL
-3. **Frontend**: Angular (version 19+)
+3. **Frontend**: HTMX with server-side rendered HTML
 
 ## Rationale
 
@@ -63,49 +63,55 @@ We have decided to use the following technology stack for our supported client &
 
 6. **Scalability Options**: MySQL provides various replication and clustering options to scale as our user base grows.
 
-### Angular (v19+) for Frontend
+### HTMX for Frontend
 
-1. **Standalone Components**: Angular 19+ supports standalone components, reducing boilerplate and enabling more modular code organization.
+1. **Simplicity**: HTMX allows building dynamic web applications using HTML attributes, eliminating the need for complex JavaScript frameworks and reducing cognitive overhead.
 
-2. **Reactive Resources**: Angular's reactive approach, particularly with newer features like signals and reactive resources, provides elegant handling of API calls, loading states, and response caching.
+2. **Server-Side Rendering**: By leveraging server-side rendering with Go templates, we maintain a single source of truth for business logic and reduce client-server complexity.
 
-3. **Type Safety**: Angular's TypeScript foundation aligns with our emphasis on type safety across the stack.
+3. **Minimal JavaScript**: HTMX requires minimal custom JavaScript, reducing bundle sizes, build complexity, and potential security vulnerabilities.
 
-4. **Comprehensive Framework**: Angular provides a complete solution including routing, forms, HTTP client, and testing tools, reducing the need to evaluate and integrate separate libraries.
+4. **Progressive Enhancement**: HTMX enhances standard HTML forms and links, ensuring the application remains functional even if JavaScript fails to load.
 
-5. **Long-term Support**: Google's backing and Angular's predictable release schedule provide confidence in long-term maintenance.
+5. **Fast Development**: With HTMX, frontend development becomes primarily about HTML templating, which aligns well with Go's template system and reduces context switching.
 
-6. **Enterprise Readiness**: Angular's architecture is well-suited for large-scale applications with complex business logic.
+6. **Performance**: Server-side rendering provides faster initial page loads and better SEO, while HTMX's lightweight nature ensures minimal client-side overhead.
+
+7. **Accessibility**: HTML-first approach naturally promotes better accessibility practices compared to JavaScript-heavy SPAs.
 
 ## Consequences
 
 ### Positive
 
-1. **Consistent Development Experience**: All three technologies emphasize strong typing and structured development approaches.
+1. **Unified Development Experience**: Both backend logic and frontend rendering are handled in Go, reducing context switching and maintaining consistency.
 
-2. **Deployment Flexibility**: The stack can be deployed on-premises or in various cloud environments with minimal adjustments.
+2. **Deployment Simplicity**: Single binary deployment with embedded templates eliminates the need for separate frontend build processes and hosting.
 
-3. **Performance**: Both Go and Angular are known for good performance characteristics, and MySQL can be optimized for our specific use cases.
+3. **Performance**: Server-side rendering provides excellent initial load times, and HTMX's minimal footprint ensures fast interactions.
 
-4. **Maintainability**: All three technologies have clear conventions and patterns that promote maintainable code.
+4. **Maintainability**: HTML templates are easier to understand and maintain than complex JavaScript component hierarchies.
 
-5. **Scalability**: Each component of the stack has proven scaling capabilities for growing applications.
+5. **Security**: Reduced client-side JavaScript surface area minimizes potential XSS vulnerabilities.
+
+6. **SEO-Friendly**: Server-side rendering ensures content is immediately available to search engines. Even though... we won't need SEO given it's a local app (for now).
 
 ### Negative
 
-1. **Learning Curve**: Team members unfamiliar with any of these technologies will need time to become proficient.
+1. **Limited Offline Capabilities**: Server-dependent architecture means limited functionality when offline compared to SPAs.
 
-2. **Ecosystem Integration**: Some third-party tools or libraries might not integrate as seamlessly across this specific stack compared to more common combinations.
+2. **Real-time Features**: Implementing real-time features like live updates requires additional consideration with WebSockets or Server-Sent Events.
 
-3. **Operational Complexity**: Managing MySQL at scale requires database administration expertise that the team may need to develop.
+3. **Complex UI Interactions**: Very complex client-side interactions might require custom JavaScript, potentially breaking the HTMX paradigm.
 
-4. **Angular Updates**: Angular's frequent release cycle requires ongoing attention to keep the frontend updated.
+4. **Learning Curve**: Team members familiar with modern JavaScript frameworks may need to adjust to the HTML-first approach.
+
+5. **Third-party Integrations**: Some third-party services designed for SPAs might require additional integration work.
 
 ## Alternatives Considered
 
 ### Backend Alternatives
 
-1. **Node.js/Express**: Would provide JavaScript consistency across the stack but lacks Go's performance characteristics and type safety.
+1. **Node.js/Express**: Would provide JavaScript consistency across the stack but lacks Go's performance characteristics and type safety. Also, dev hates JS.
 
 2. **Java/Spring**: Offers robust enterprise features but has a steeper learning curve and more verbose development process.
 
@@ -121,25 +127,34 @@ We have decided to use the following technology stack for our supported client &
 
 ### Frontend Alternatives
 
-1. **React**: Offers a larger ecosystem and more flexibility but requires more decisions about additional libraries and architecture.
+1. **Angular**: Provides a comprehensive framework with strong typing but introduces significant complexity and build processes that may be overkill for our needs.
 
-2. **Vue.js**: Provides a gentler learning curve but lacks some of Angular's built-in features for enterprise applications.
+2. **React**: Offers a large ecosystem and flexibility but requires more decisions about additional libraries, build tools, and state management.
 
-3. **Svelte**: Offers excellent performance but has a smaller ecosystem and less enterprise adoption.
+3. **Vue.js**: Provides a gentler learning curve but still requires a separate build process and JavaScript expertise.
+
+4. **Svelte**: Offers excellent performance but has a smaller ecosystem and requires compilation steps.
+
+5. **Plain HTML/CSS/JS**: Would be simpler but lacks the dynamic capabilities needed for a modern financial application.
 
 ## Implementation Notes
 
-1. **API Design**: We'll use OpenAPI specifications to define the contract between our Go backend and Angular frontend.
+1. **Template System**: We'll use Go's built-in `html/template` package for server-side rendering with HTMX attributes.
 
-2. **Database Access**: We'll use a clean repository pattern in Go to abstract database operations, making potential future database migrations easier.
+2. **API Design**: We'll design endpoints that return HTML fragments for HTMX requests and full pages for direct navigation.
 
-3. **Frontend State Management**: We'll leverage Angular's reactive resources and signals for state management rather than introducing additional libraries.
+3. **Database Access**: We'll use a clean repository pattern in Go to abstract database operations, making potential future database migrations easier.
 
-4. **Deployment Strategy**: We'll containerize the application components for consistent deployment across environments.
+4. **State Management**: Application state will be managed server-side with session storage, reducing client-side complexity.
+
+5. **Deployment Strategy**: We'll containerize the application as a single binary with embedded templates for consistent deployment across environments.
+
+6. **Progressive Enhancement**: Core functionality will work without JavaScript, with HTMX providing enhanced user experience.
 
 ## References
 
 - [Go Documentation](https://golang.org/doc/)
 - [MySQL Documentation](https://dev.mysql.com/doc/)
-- [Angular Documentation](https://angular.io/docs)
+- [HTMX Documentation](https://htmx.org/docs/)
+- [Go HTML Templates](https://pkg.go.dev/html/template)
 - [AWS Aurora DB Compatibility](https://aws.amazon.com/rds/aurora/mysql-features/)

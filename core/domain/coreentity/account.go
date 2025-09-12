@@ -64,9 +64,14 @@ func (a *Account) Validate() error {
 }
 
 // DebitBalance debits the account balance (for expenditures and outgoing transfers)
-func (a *Account) DebitBalance(amount float32) {
+func (a *Account) DebitBalance(amount float32) error {
+	if !a.HasSufficientBalance(amount) {
+		return ErrInsufficientBalance
+	}
 	a.CurrentBalance -= amount
 	a.UpdatedAt = time.Now()
+
+	return nil
 }
 
 // CreditBalance credits the account balance (for income and incoming transfers)
